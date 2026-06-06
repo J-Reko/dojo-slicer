@@ -2,17 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-select=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dojo Slicer: Vengeance</title>
   <style>
     :root {
       --demon-red: #8b0000;
       --aura-color: rgba(255, 68, 0, 0.4);
       --trail-color: #ffffff;
-    }
-
-    * {
-      box-sizing: border-box;
     }
 
     body {
@@ -22,52 +18,13 @@
       color: white;
       font-family: 'Garamond', serif;
       user-select: none;
-      -webkit-user-select: none;
-      touch-action: none; /* Prevents mobile drag-to-refresh and zooming stutters */
-      width: 100vw;
-      height: 100vh;
-    }
-
-    /* --- PORTRAIT MODE PROTECTION LOCK --- */
-    #orientation-overlay {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: #0d0202;
-      color: #ff4400;
-      z-index: 10000;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      font-family: 'Garamond', serif;
-      padding: 20px;
-    }
-    
-    .rotate-icon {
-      font-size: 60px;
-      margin-bottom: 20px;
-      animation: rotateDevice 2s infinite ease-in-out;
-    }
-
-    @keyframes rotateDevice {
-      0% { transform: rotate(0deg); }
-      50% { transform: rotate(-90deg); }
-      100% { transform: rotate(-90deg); }
-    }
-
-    /* Activates ONLY when device screen height is greater than width */
-    @media (orientation: portrait) {
-      #orientation-overlay {
-        display: flex;
-      }
     }
 
     /* --- BACKGROUNDS & DOJO STYLING --- */
     #ominous-bg {
       position: absolute;
-      width: 100%;
-      height: 100%;
+      width: 100vw;
+      height: 100vh;
       background: radial-gradient(circle, #1a0505 0%, #000 80%);
       z-index: 0;
       transition: background 0.5s, filter 0.5s;
@@ -122,7 +79,6 @@
       justify-content: center;
       align-items: center;
       z-index: 10;
-      padding: 20px;
     }
 
     .aura-btn {
@@ -138,7 +94,6 @@
       overflow: visible;
       transition: all 0.3s;
       z-index: 11;
-      max-width: 100%;
     }
 
     .aura-btn::before {
@@ -165,8 +120,8 @@
 
     #branding-container {
       position: absolute;
-      bottom: 20px;
-      left: 20px;
+      bottom: 25px;
+      left: 25px;
       display: flex;
       flex-direction: column;
       gap: 8px;
@@ -174,7 +129,7 @@
     }
 
     .credits-text {
-      font-size: 16px;
+      font-size: 18px;
       letter-spacing: 2px;
       color: rgba(255,255,255,0.6);
       text-shadow: 1px 1px 3px #000;
@@ -185,7 +140,7 @@
       border: 1px solid rgba(255,255,255,0.3);
       color: rgba(255,255,255,0.8);
       padding: 6px 14px;
-      font-size: 12px;
+      font-size: 13px;
       cursor: pointer;
       text-transform: uppercase;
       letter-spacing: 1px;
@@ -202,17 +157,16 @@
     /* --- PROLOGUE CINEMATIC SCREEN --- */
     #prologue-screen {
       position: absolute;
-      top: 0; left: 0; width: 100%; height: 100%;
+      top: 0; left: 0; width: 100vw; height: 100vh;
       background: black;
       z-index: 500;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      padding: 20px;
     }
     #prologue-text {
-      font-size: 26px;
+      font-size: 28px;
       font-style: italic;
       color: #ddd;
       text-align: center;
@@ -220,14 +174,14 @@
       line-height: 1.6;
       transition: opacity 1s ease-in-out;
       opacity: 0;
-      margin-bottom: 30px;
+      margin-bottom: 40px;
     }
 
     /* --- GAMEPLAY UI --- */
     #hud {
       position: absolute;
-      top: 15px; left: 15px;
-      font-size: 20px;
+      top: 20px; left: 20px;
+      font-size: 22px;
       z-index: 20;
       display: none;
       text-shadow: 2px 2px 5px #000;
@@ -235,31 +189,30 @@
 
     #mode-nav {
       position: absolute;
-      bottom: 20px;
+      bottom: 30px;
       width: 100%;
       display: flex;
       justify-content: center;
-      gap: 15px;
+      gap: 20px;
       z-index: 20;
       display: none;
-      padding: 0 10px;
     }
 
     .nav-btn {
       background: rgba(0, 0, 0, 0.6);
       color: white;
       border: 1px solid white;
-      padding: 10px 20px;
+      padding: 12px 24px;
       cursor: pointer;
       font-family: 'Garamond', serif;
-      font-size: 16px;
+      font-size: 18px;
       transition: all 0.2s;
     }
     .nav-btn:hover { background: white; color: black; box-shadow: 0 0 10px white; }
 
     #ambient-toggle-container {
       position: absolute;
-      top: 15px;
+      top: 20px;
       left: 50%;
       transform: translateX(-50%);
       z-index: 25;
@@ -268,18 +221,18 @@
 
     #boss-hud {
       position: absolute;
-      top: 15px; right: 15px;
+      top: 20px; right: 20px;
       text-align: right;
       z-index: 20;
       display: none;
     }
 
     .health-bar { 
-      width: 200px; 
-      height: 16px; 
+      width: 250px; 
+      height: 18px; 
       background: #333; 
       border: 1px solid #fff; 
-      margin-top: 6px; 
+      margin-top: 8px; 
       position: relative;
       box-shadow: 0 0 8px rgba(0,0,0,0.5);
     }
@@ -289,20 +242,20 @@
       width: 100%; height: 100%;
       top: 0; left: 0;
       text-align: center;
-      font-size: 11px;
+      font-size: 13px;
       font-weight: bold;
-      line-height: 16px;
+      line-height: 18px;
       color: white;
       text-shadow: 1px 1px 2px #000;
     }
 
     #boss-hints {
       position: absolute;
-      left: 20px;
-      top: 30%;
+      left: 30px;
+      top: 35%;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 15px;
       z-index: 20;
       display: none;
       pointer-events: none;
@@ -310,9 +263,9 @@
     .hint-card {
       background: rgba(0, 0, 0, 0.65);
       border-left: 4px solid #ff4400;
-      padding: 10px 16px;
-      font-size: 14px;
-      max-width: 240px;
+      padding: 12px 20px;
+      font-size: 16px;
+      max-width: 280px;
       letter-spacing: 1px;
       line-height: 1.4;
       text-shadow: 1px 1px 2px #000;
@@ -321,7 +274,7 @@
     }
     @keyframes fadeInHint { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
 
-    /* --- SHOP VIEW AND ADAPTIVE SCROLL SYSTEM --- */
+    /* --- TABS SYSTEM IN SHOP --- */
     .screen {
       position: absolute;
       top: 0; left: 0; width: 100%; height: 100%;
@@ -331,54 +284,44 @@
       align-items: center;
       background: rgba(5,5,5,0.95);
       z-index: 100;
-      padding: 15px;
     }
     .hidden { display: none !important; }
 
     .shop-container {
       background: #111;
-      padding: 20px;
+      padding: 30px;
       border-radius: 12px;
       border: 1px solid #333;
-      width: 95%;
-      max-width: 660px;
-      max-height: 78vh;
+      width: 700px;
+      max-height: 75vh;
       overflow-y: auto;
     }
     .shop-tabs {
       display: flex;
-      gap: 8px;
-      margin-bottom: 15px;
+      gap: 10px;
+      margin-bottom: 20px;
       border-bottom: 1px solid #333;
       padding-bottom: 10px;
-      overflow-x: auto; /* Gracefully scroll tabs horizontally on narrow phone form-factors */
-      white-space: nowrap;
     }
     .tab-btn {
       background: #1e1e1e;
       color: #aaa;
       border: 1px solid #444;
-      padding: 6px 14px;
+      padding: 8px 16px;
       cursor: pointer;
       font-family: 'Garamond', serif;
-      font-size: 15px;
-      flex-shrink: 0;
+      font-size: 16px;
     }
     .tab-btn.active {
       background: #ff4400;
       color: white;
       border-color: #ff4400;
     }
-    
-    .shop-grid { 
-      display: grid; 
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
-      gap: 12px; 
-    }
+    .shop-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
     .shop-item {
       background: #1a1a1a;
       border: 1px solid #2d2d2d;
-      padding: 12px;
+      padding: 15px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -389,14 +332,14 @@
     .object { position: absolute; z-index: 15; }
     
     .balloon {
-      width: 44px; height: 58px;
+      width: 50px; height: 65px;
       background: radial-gradient(circle at 50% 30%, #33aaff 0%, #0044aa 80%);
       border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
       box-shadow: 0 5px 10px rgba(0,0,0,0.4);
     }
     
     .target {
-      width: 48px; height: 48px;
+      width: 55px; height: 55px;
       background: #b57a4c;
       border: 4px solid #5c3a21;
       box-shadow: 0 5px 10px rgba(0,0,0,0.5);
@@ -404,14 +347,14 @@
     }
     .target::before {
       content: '';
-      width: 24px; height: 24px;
+      width: 30px; height: 30px;
       border: 4px solid #cc0000;
       border-radius: 50%;
       background: white;
     }
 
     .dummy {
-      width: 36px; height: 80px;
+      width: 40px; height: 90px;
       background: linear-gradient(to right, #8a5a36, #5c3a21);
       border-radius: 6px;
       box-shadow: 0 5px 10px rgba(0,0,0,0.5);
@@ -420,15 +363,15 @@
     .dummy::before {
       content: '';
       position: absolute;
-      top: 22px; left: -20px;
-      width: 76px; height: 10px;
+      top: 25px; left: -25px;
+      width: 90px; height: 12px;
       background: #5c3a21;
       border-radius: 4px;
     }
 
-    .boss { position: absolute; font-size: 75px; transition: all 0.8s ease; z-index: 12; filter: drop-shadow(0 0 20px red); }
+    .boss { position: absolute; font-size: 90px; transition: all 0.8s ease; z-index: 12; filter: drop-shadow(0 0 20px red); }
     .fireball { 
-      width: 34px; height: 34px; 
+      width: 40px; height: 40px; 
       background: radial-gradient(circle, #fff, #ff6600, #990000); 
       border-radius: 50%; 
       box-shadow: 0 0 25px #ff3300; 
@@ -436,7 +379,7 @@
 
     .dojo-demon {
       position: absolute;
-      font-size: 40px;
+      font-size: 45px;
       z-index: 16;
       filter: drop-shadow(0 0 10px #ff3300);
       cursor: crosshair;
@@ -452,56 +395,9 @@
       opacity: 0;
       z-index: 50;
     }
-
-    /* --- RESPONSIVE DOWN-SCALING FOR SHORT MOBILE SCREENS --- */
-    @media (max-height: 480px) {
-      .aura-btn {
-        font-size: 20px;
-        padding: 12px 30px;
-      }
-      #prologue-text {
-        font-size: 18px;
-        margin-bottom: 15px;
-        max-width: 85%;
-      }
-      .nav-btn {
-        padding: 8px 16px;
-        font-size: 14px;
-      }
-      .hint-card {
-        font-size: 12px;
-        padding: 8px 12px;
-        max-width: 190px;
-      }
-      #boss-hints {
-        top: 25%;
-        left: 15px;
-        gap: 6px;
-      }
-      .health-bar {
-        width: 160px;
-        height: 14px;
-      }
-      .health-val {
-        font-size: 10px;
-        line-height: 14px;
-      }
-      #hud, #boss-hud {
-        font-size: 16px;
-      }
-      .shop-container {
-        padding: 12px;
-      }
-    }
   </style>
 </head>
 <body>
-
-<div id="orientation-overlay">
-  <div class="rotate-icon">🔄</div>
-  <h2 style="margin: 0 0 10px 0; letter-spacing: 2px;">ROTATE YOUR DEVICE</h2>
-  <p style="margin: 0; font-size: 16px; opacity: 0.8;">Please flip to Landscape mode to wield your blade!</p>
-</div>
 
 <div id="vignette"></div>
 <div id="ominous-bg">
@@ -522,7 +418,7 @@
 
 <div id="prologue-screen" class="hidden">
   <div id="prologue-text"></div>
-  <button class="nav-btn" onclick="skipPrologue()" style="border-color: #ff4400; color: #ff8855;">Skip Cinematic ➔</button>
+  <button class="nav-btn" onclick="skipPrologue()" style="border-color: #ff4400; color: #ff8855;">Skip Cinematic ⏭</button>
 </div>
 
 <div id="hud">
@@ -542,7 +438,7 @@
 </div>
 
 <div id="ambient-toggle-container">
-  <button id="toggle-audio-mode-btn" class="nav-btn" style="padding: 6px 16px; font-size: 13px;" onclick="toggleDojoAudioMode()">Audio Mode: Training Arc</button>
+  <button id="toggle-audio-mode-btn" class="nav-btn" style="padding: 6px 16px; font-size: 14px;" onclick="toggleDojoAudioMode()">Audio Mode: Training Arc</button>
 </div>
 
 <div id="boss-hud">
@@ -561,8 +457,8 @@
 
 <div id="menu-shop" class="screen hidden">
   <div class="shop-container">
-    <h2 style="color:#ffcc00; font-size: 26px; margin: 0 0 5px 0;">Blacksmith's Sanctuary</h2>
-    <p style="font-size:16px; margin: 0 0 15px 0;">Vault Holdings: <span id="shop-coins" style="color:#ffcc00; font-weight:bold;">0</span> Coins</p>
+    <h2 style="color:#ffcc00; font-size: 30px; margin-top: 0;">Blacksmith's Sanctuary</h2>
+    <p style="font-size:18px;">Vault Holdings: <span id="shop-coins" style="color:#ffcc00; font-weight:bold;">0</span> Coins</p>
     
     <div class="shop-tabs">
       <button id="tab-upgrades" class="tab-btn active" onclick="switchTab('upgrades')">Upgrades</button>
@@ -574,76 +470,78 @@
     <div id="content-upgrades" class="shop-tab-content shop-grid">
       <div class="shop-item">
         <div><strong>Sharpen Edge (+Dmg)</strong><br><small style="color:#aaa;">Cost: <span id="cost-dmg">15</span></small></div>
-        <button class="nav-btn" style="padding:6px 12px; font-size:14px;" onclick="buyUpgrade('dmg')">Buy</button>
+        <button class="nav-btn" style="padding:6px 12px;" onclick="buyUpgrade('dmg')">Buy</button>
       </div>
       <div class="shop-item">
         <div><strong>Hardened Will (+HP)</strong><br><small style="color:#aaa;">Cost: <span id="cost-hp">20</span></small></div>
-        <button class="nav-btn" style="padding:6px 12px; font-size:14px;" onclick="buyUpgrade('hp')">Buy</button>
+        <button class="nav-btn" style="padding:6px 12px;" onclick="buyUpgrade('hp')">Buy</button>
       </div>
       <div class="shop-item">
         <div><strong>Greed Index (+Coin Gain)</strong><br><small style="color:#aaa;">Cost: <span id="cost-mult">40</span></small></div>
-        <button class="nav-btn" style="padding:6px 12px; font-size:14px;" onclick="buyUpgrade('mult')">Buy</button>
+        <button class="nav-btn" style="padding:6px 12px;" onclick="buyUpgrade('mult')">Buy</button>
       </div>
     </div>
 
     <div id="content-cosmetics" class="shop-tab-content shop-grid hidden">
       <div class="shop-item">
         <div><strong style="color:#ffffff;">Default Steel</strong><br><small style="color:#aaa;">Active baseline aura.</small></div>
-        <button id="btn-cos-default" class="nav-btn" style="padding:6px 12px; font-size:14px;" onclick="equipCosmetic('default')">Equip</button>
+        <button id="btn-cos-default" class="nav-btn" style="padding:6px 12px;" onclick="equipCosmetic('default')">Equip</button>
       </div>
       <div class="shop-item">
         <div><strong style="color:#ff3333;">Crimson Fury</strong><br><small style="color:#aaa;">Cost: 75 | Buff: +1 Base Dmg</small></div>
-        <button id="btn-cos-crimson" class="nav-btn" style="padding:6px 12px; font-size:14px;" onclick="buyCosmetic('crimson', 75)">Unlock</button>
+        <button id="btn-cos-crimson" class="nav-btn" style="padding:6px 12px;" onclick="buyCosmetic('crimson', 75)">Unlock</button>
       </div>
       <div class="shop-item">
         <div><strong style="color:#cc33ff;">Void Purple</strong><br><small style="color:#aaa;">Cost: 120 | Buff: +10 Max Health</small></div>
-        <button id="btn-cos-purple" class="nav-btn" style="padding:6px 12px; font-size:14px;" onclick="buyCosmetic('purple', 120)">Unlock</button>
+        <button id="btn-cos-purple" class="nav-btn" style="padding:6px 12px;" onclick="buyCosmetic('purple', 120)">Unlock</button>
       </div>
       <div class="shop-item">
         <div><strong style="color:#33ff99;">Jade Emerald</strong><br><small style="color:#aaa;">Cost: 160 | Buff: +2 Coins per Slice</small></div>
-        <button id="btn-cos-emerald" class="nav-btn" style="padding:6px 12px; font-size:14px;" onclick="buyCosmetic('emerald', 160)">Unlock</button>
+        <button id="btn-cos-emerald" class="nav-btn" style="padding:6px 12px;" onclick="buyCosmetic('emerald', 160)">Unlock</button>
       </div>
     </div>
 
     <div id="content-music" class="shop-tab-content shop-grid hidden">
       <div class="shop-item">
         <div><strong>Original Training Arc</strong><br><small style="color:#aaa;">Standard focus cadence</small></div>
-        <button id="btn-mus-default" class="nav-btn" style="padding:6px 12px; font-size:14px;" onclick="selectTrack('default')">Play</button>
+        <button id="btn-mus-default" class="nav-btn" style="padding:6px 12px;" onclick="selectTrack('default')">Play</button>
       </div>
       <div class="shop-item">
         <div><strong>Shadow Steps</strong><br><small style="color:#aaa;">Cost: 50 | Fast sync rhythm</small></div>
-        <button id="btn-mus-shadow" class="nav-btn" style="padding:6px 12px; font-size:14px;" onclick="buyTrack('shadow', 50)">Unlock</button>
+        <button id="btn-mus-shadow" class="nav-btn" style="padding:6px 12px;" onclick="buyTrack('shadow', 50)">Unlock</button>
       </div>
       <div class="shop-item">
         <div><strong>Ronin's Journey</strong><br><small style="color:#aaa;">Cost: 90 | Ominous heavy beats</small></div>
-        <button id="btn-mus-ronin" class="nav-btn" style="padding:6px 12px; font-size:14px;" onclick="buyTrack('ronin', 90)">Unlock</button>
+        <button id="btn-mus-ronin" class="nav-btn" style="padding:6px 12px;" onclick="buyTrack('ronin', 90)">Unlock</button>
       </div>
     </div>
 
     <div id="content-stages" class="shop-tab-content shop-grid hidden">
       <div class="shop-item">
         <div><strong>Bamboo Dojo</strong><br><small style="color:#aaa;">Default balance settings.</small></div>
-        <button id="btn-bg-default" class="nav-btn" style="padding:6px 12px; font-size:14px;" onclick="selectBackground('default')">Apply</button>
+        <button id="btn-bg-default" class="nav-btn" style="padding:6px 12px;" onclick="selectBackground('default')">Apply</button>
       </div>
       <div class="shop-item">
         <div><strong>Sakura Garden</strong><br><small style="color:#aaa;">Cost: 60 | Buff: Spawns objects faster</small></div>
-        <button id="btn-bg-sakura" class="nav-btn" style="padding:6px 12px; font-size:14px;" onclick="buyBackground('sakura', 60)">Unlock</button>
+        <button id="btn-bg-sakura" class="nav-btn" style="padding:6px 12px;" onclick="buyBackground('sakura', 60)">Unlock</button>
       </div>
       <div class="shop-item">
         <div><strong>Underworld Pit</strong><br><small style="color:#aaa;">Cost: 150 | High value, heavy Demon raids!</small></div>
-        <button id="btn-bg-underworld" class="nav-btn" style="padding:6px 12px; font-size:14px;" onclick="buyBackground('underworld', 150)">Unlock</button>
+        <button id="btn-bg-underworld" class="nav-btn" style="padding:6px 12px;" onclick="buyBackground('underworld', 150)">Unlock</button>
       </div>
     </div>
 
   </div>
-  <button class="nav-btn" onclick="closeShop()" style="margin-top:15px;">Return to Training</button>
+  <button class="nav-btn" onclick="closeShop()" style="margin-top:20px;">Return to Training</button>
 </div>
 
 <div id="menu-gameover" class="screen hidden">
-  <h1 id="go-title" style="font-size: 42px; letter-spacing: 5px; color:#ff3333; margin: 0 0 10px 0;">FALLEN</h1>
-  <p id="go-desc" style="font-size: 18px; color:#ddd; font-weight: bold; text-align:center; max-width:500px; line-height:1.5; margin: 0;">Buy upgrades for your blade in the shop</p>
-  <button id="go-action-btn" class="nav-btn" onclick="closeGameOver()" style="margin-top:20px; border-color:#ff3333; color:#ffcccc;">Return to the dojo</button>
+  <h1 id="go-title" style="font-size: 48px; letter-spacing: 5px; color:#ff3333;">FALLEN</h1>
+  <p id="go-desc" style="font-size: 22px; color:#ddd; font-weight: bold; text-align:center; max-width:500px; line-height:1.5;">Buy upgrades to for your blade in shop</p>
+  <button id="go-action-btn" class="nav-btn" onclick="closeGameOver()" style="margin-top:25px; border-color:#ff3333; color:#ffcccc;">Return to the dojo</button>
 </div>
+
+<button id="fullscreen-btn" class="nav-btn" style="position: absolute; bottom: 25px; right: 25px; z-index: 1000; padding: 8px 16px; font-size: 16px; border-color: rgba(255,255,255,0.4);" onclick="toggleFullscreen()">📺 Fullscreen</button>
 
 <div id="slash"></div>
 
@@ -665,6 +563,7 @@
   let bossCurrentHp = 500;
   let isBossSplit = false;
 
+  // Track Unlocked Items array and Equipped strings independently
   let unlockedCosmetics = ['default'];
   let currentCosmetic = 'default';
   
@@ -1088,21 +987,16 @@
 
   function spawnDojo() {
     let startX = Math.random() * (window.innerWidth - 150) + 50;
-    
-    // Proportional physics adjustment for landscape shallow/mobile phone windows
-    let heightMultiplier = Math.max(0.65, window.innerHeight / 720);
-    let vy = -(Math.random() * 3 + 11) * heightMultiplier;
-    let g = 0.22 * heightMultiplier;
-    
+    let vy = -(Math.random() * 4 + 13);
     let vx = (window.innerWidth/2 - startX) * 0.008 + (Math.random() * 2 - 1);
     
     let roll = Math.random();
     if(roll < 0.45) {
-      createObj("balloon", "balloon", startX, window.innerHeight, vx, vy, g, 2);
+      createObj("balloon", "balloon", startX, window.innerHeight, vx, vy, 0.23, 2);
     } else if(roll < 0.8) {
-      createObj("target", "target", startX, window.innerHeight, vx, vy, g, 5);
+      createObj("target", "target", startX, window.innerHeight, vx, vy, 0.23, 5);
     } else {
-      createObj("dummy", "dummy", startX, window.innerHeight, vx, vy, g, 10);
+      createObj("dummy", "dummy", startX, window.innerHeight, vx, vy, 0.23, 10);
     }
   }
 
@@ -1112,8 +1006,8 @@
     document.body.appendChild(el);
     let x = Math.random() * (window.innerWidth - 100);
     let y = Math.random() * (window.innerHeight - 200);
-    let vx = (Math.random() > 0.5 ? 3 : -3) * (Math.random() * 1.5 + 1);
-    let vy = (Math.random() > 0.5 ? 3 : -3) * (Math.random() * 1.5 + 1);
+    let vx = (Math.random() > 0.5 ? 3 : -3) * (Math.random() * 2 + 1);
+    let vy = (Math.random() > 0.5 ? 3 : -3) * (Math.random() * 2 + 1);
     objects.push({el, type: "dojo-demon", x, y, vx, vy, g: 0, scoreVal: 60});
     
     setTimeout(() => {
@@ -1143,7 +1037,7 @@
     bossInterval = setInterval(() => {
       bossEntities.forEach(b => {
         let rect = b.el.getBoundingClientRect();
-        createObj("fireball", "fireball", rect.left+35, rect.top+45, (Math.random()-0.5)*5, 3.5, 0.06, 0);
+        createObj("fireball", "fireball", rect.left+45, rect.top+60, (Math.random()-0.5)*5, 4, 0.06, 0);
         playFireballSound();
       });
     }, dynamicSpeed);
@@ -1174,7 +1068,7 @@
     for(let i = objects.length - 1; i >= 0; i--) {
       let o = objects[i];
       let rect = o.el.getBoundingClientRect();
-      let radiusCheck = (o.type === "dummy" || o.type === "dojo-demon") ? 50 : 40;
+      let radiusCheck = (o.type === "dummy" || o.type === "dojo-demon") ? 55 : 45;
 
       if(Math.hypot(x - (rect.left + rect.width/2), y - (rect.top + rect.height/2)) < radiusCheck) {
         let baseCoins = (o.type === "fireball") ? 1 : o.scoreVal;
@@ -1191,7 +1085,7 @@
 
     bossEntities.forEach(b => {
       let rect = b.el.getBoundingClientRect();
-      if(Math.hypot(x - (rect.left+40), y - (rect.top+40)) < 65) {
+      if(Math.hypot(x - (rect.left+45), y - (rect.top+45)) < 75) {
         let cosmeticDmg = (currentCosmetic === 'crimson') ? 1 : 0;
         bossCurrentHp -= (playerDmg + cosmeticDmg);
         
@@ -1328,6 +1222,17 @@
     document.getElementById("go-desc").innerText = "The Demon General falls broken before your blade! Your training has paid off.";
     document.getElementById("menu-gameover").classList.remove("hidden"); 
     state="WIN"; 
+  }
+
+  function toggleFullscreen() {
+    try { playClickSound(); } catch(e){}
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(err => {
+        console.log("Fullscreen activation error: ", err.message);
+      });
+    } else {
+      document.exitFullscreen();
+    }
   }
 
   window.addEventListener("mousedown", e => { if (state === "MENU" && !audioCtx) playChoir(); isSwiping = true; lastX = e.clientX; lastY = e.clientY; });
