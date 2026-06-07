@@ -366,6 +366,7 @@
       bottom: 25px;
       right: 25px;
       z-index: 100;
+      display: none; /* hidden: remove bottom-right fullscreen control */
     }
 
     /* --- TAB SYSTEM STRUCTURE --- */
@@ -378,6 +379,7 @@
       align-items: center;
       background: rgba(5,5,5,0.95);
       z-index: 100;
+      overflow: auto; /* allow scrolling on all full-screen overlays */
     }
     .hidden { display: none !important; }
 
@@ -388,7 +390,7 @@
       border: 1px solid #333;
       width: 700px;
       max-height: 75vh;
-      overflow-y: auto;
+      overflow-y: auto; /* scroll inside panels */
     }
     .shop-tabs, .vault-tabs {
       display: flex;
@@ -396,6 +398,7 @@
       margin-bottom: 20px;
       border-bottom: 1px solid #333;
       padding-bottom: 10px;
+      overflow-x: auto; /* allow horizontal scroll if needed */
     }
     .tab-btn {
       background: #1e1e1e;
@@ -405,6 +408,7 @@
       cursor: pointer;
       font-family: 'Garamond', serif;
       font-size: 16px;
+      white-space: nowrap;
     }
     .tab-btn.active { background: #ff4400; color: white; border-color: #ff4400; }
     .shop-grid, .vault-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
@@ -458,6 +462,12 @@
       background: var(--trail-color); box-shadow: 0 0 12px var(--trail-color);
       transform-origin: left center; opacity: 0; z-index: 50;
     }
+
+    /* Always show a thin scrollbar on overlays for visibility (optional, webkit hint) */
+    .screen::-webkit-scrollbar { width: 10px; }
+    .screen::-webkit-scrollbar-thumb { background: #444; border-radius: 6px; }
+    .shop-container::-webkit-scrollbar, .vault-container::-webkit-scrollbar { width: 10px; }
+    .shop-container::-webkit-scrollbar-thumb, .vault-container::-webkit-scrollbar-thumb { background: #444; border-radius: 6px; }
   </style>
 </head>
 <body>
@@ -515,7 +525,7 @@
 
   <div id="ambient-toggle-container">
     <label for="dojo-music-dropdown" style="font-size:13px; display:block; margin-bottom:4px; letter-spacing:1px; color:#aaa;">SELECT AUDIO CADENCE</label>
-    <select id="dojo-music-dropdown" onchange="handleDropdownAudioSwap()"></select>
+    <select id="dojo-music-dropdown" onchange="handleDropdownAudioSwap"></select>
   </div>
 
   <div id="boss-hud">
@@ -533,6 +543,7 @@
     <button id="nav-story-btn" class="nav-btn" onclick="playStoryPrologue()">Story Mode</button>
   </div>
 
+  <!-- Fullscreen toggle panel removed from view (kept in DOM but hidden via CSS above) -->
   <div class="utility-panel">
     <button id="fullscreen-toggle-btn" class="nav-btn" style="padding: 8px 14px; font-size:14px; background:rgba(0,0,0,0.7);" onclick="toggleFullscreenMode()">Fullscreen ⛶</button>
   </div>
@@ -969,7 +980,7 @@
 
   function openReviewPage(event) {
     event.stopPropagation(); playClickSound();
-    window.open("https://docs.google.com/forms/d/e/1FAIpQLSc99YBb3cafk53wWXCEdJBKDGaz7hS9LkaH-tq5WcCKiGkAfAfA/viewform", '_blank');
+    window.open("[docs.google.com](https://docs.google.com/forms/d/e/1FAIpQLSc99YBb3cafk53wWXCEdJBKDGaz7hS9LkaH-tq5WcCKiGkAfAfA/viewform)", '_blank');
   }
 
   function switchShopTab(tabId) {
