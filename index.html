@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Dojo Slicer: Vengeance</title>
   <style>
     :root {
@@ -12,26 +12,31 @@
     }
 
     body {
-      margin: 0;
-      overflow: hidden;
-      background: #050505;
-      color: white;
-      font-family: 'Garamond', serif;
-      user-select: none;
-      touch-action: none;
-    }
+  margin: 0;
+  overflow: hidden;
+  background: #050505;
+  color: white;
+  font-family: 'Garamond', serif;
+  user-select: none;
+
+  touch-action: none;
+  overscroll-behavior: none;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
 
     /* --- GAME CONTAINER --- */
     #game-container {
-      position: absolute;
-      top: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 100vw;
-      max-width: 1400px;
-      height: 100vh;
-      overflow: hidden;
-    }
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  max-width: 1400px;
+  max-height: 100vh;
+  overflow: hidden;
+}
 
     #vignette {
       position: absolute;
@@ -1549,6 +1554,29 @@
   window.addEventListener("touchmove", e => handleMove(e.touches[0].clientX, e.touches[0].clientY));
   window.addEventListener("touchend", () => isSwiping = false);
   window.addEventListener("click", () => { if(state === "MENU" && choirNodes.length === 0) playChoir(); });
+
+// 🔥 MOBILE INPUT FIXES
+document.addEventListener("touchstart", e => {
+  if (e.touches.length > 1) e.preventDefault();
+}, { passive: false });
+
+document.addEventListener("touchmove", e => {
+  e.preventDefault();
+}, { passive: false });
+
+document.addEventListener("gesturestart", e => e.preventDefault());
+document.addEventListener("gesturechange", e => e.preventDefault());
+document.addEventListener("gestureend", e => e.preventDefault());
+
+let lastTouchEnd = 0;
+document.addEventListener('touchend', function (event) {
+  const now = (new Date()).getTime();
+  if (now - lastTouchEnd <= 300) {
+    event.preventDefault();
+  }
+  lastTouchEnd = now;
+}, false);
+
 </script>
 </body>
 </html>
