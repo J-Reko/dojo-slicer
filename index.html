@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- skill:chrome -->
 <style>
 /* Credit line — bottom-right */
 .design-ui-credit {
@@ -47,6 +46,7 @@
         var timer = null;
         var fade = function (out) { credit.style.opacity = out ? '0' : ''; };
         fade(true);
+      
         var show = function () {
             fade(false);
             clearTimeout(timer);
@@ -61,10 +61,8 @@
         initChromeUI();
     }
 })();
-
 </script>
-<!-- /skill:chrome -->
- <meta charset="UTF-8">
+<meta charset="UTF-8">
  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
  <title>Dojo Slicer: Vengeance</title>
  <style>
@@ -116,7 +114,8 @@
  }
  #vignette {
  position: absolute;
- top: 0; left: 0; width: 100%; height: 100%;
+ top: 0; left: 0;
+ width: 100%; height: 100%;
  box-shadow: inset 0 0 150px #000;
  pointer-events: none;
  z-index: 5;
@@ -154,7 +153,8 @@
  }
  .dojo-floor {
  position: absolute;
- bottom: 0; left: 0; width: 100%; height: 35%;
+ bottom: 0; left: 0; width: 100%;
+ height: 35%;
  background: linear-gradient(to bottom, #2b1a0e 0%, #140c06 100%);
  border-top: 4px solid #422815;
  box-shadow: inset 0 20px 30px rgba(0,0,0,0.8);
@@ -178,19 +178,24 @@
  }
  .sakura-petal-node {
  position: absolute; width: 8px; height: 8px; background: #ffb7c5;
- border-radius: 50% 0 50% 50%; opacity: 0.7; animation: petalFall 6s linear infinite;
+ border-radius: 50% 0 50% 50%; opacity: 0.7;
+ animation: petalFall 6s linear infinite;
  }
  .lava-wave {
  position: absolute; bottom: 0; left: 0; width: 100%;
- height: 12%; background: linear-gradient(0deg, #aa2200, transparent); opacity: 0.8; animation: pulseLava 2s ease-in-out infinite alternate;
+ height: 12%;
+ background: linear-gradient(0deg, #aa2200, transparent); opacity: 0.8; animation: pulseLava 2s ease-in-out infinite alternate;
  }
  .ice-spike {
- position: absolute; bottom: 35%; border-left: 15px solid transparent;
+ position: absolute; bottom: 35%;
+ border-left: 15px solid transparent;
  border-right: 15px solid transparent; border-bottom: 70px solid rgba(135, 206, 235, 0.4);
  }
  .shrine-gate {
- position: absolute; top: 20%; left: 50%; transform: translateX(-50%);
- width: 200px; height: 160px; border-top: 14px solid #4a154b; border-left: 10px solid #2e0830; border-right: 10px solid #2e0830; opacity: 0.25;
+ position: absolute;
+ top: 20%; left: 50%; transform: translateX(-50%);
+ width: 200px; height: 160px; border-top: 14px solid #4a154b; border-left: 10px solid #2e0830;
+ border-right: 10px solid #2e0830; opacity: 0.25;
  }
  @keyframes petalFall {
  0% { transform: translateY(-50px) translateX(0) rotate(0deg); opacity: 0; }
@@ -211,7 +216,8 @@
  }
  #fullscreen-overlay {
  position: absolute;
- top: 0; left: 0; width: 100%; height: 100%;
+ top: 0; left: 0;
+ width: 100%; height: 100%;
  background: rgba(0, 0, 0, 0.95);
  z-index: 9999;
  display: flex;
@@ -263,8 +269,10 @@
  z-index: -1;
  animation: pulse 2s infinite alternate;
  }
- .aura-btn:hover { background: #fff; color: #000; box-shadow: 0 0 40px #ff4400; }
- @keyframes pulse { 0% { opacity: 0.3; transform: scale(0.95); } 100% { opacity: 0.8; transform: scale(1.1); } }
+ .aura-btn:hover { background: #fff; color: #000;
+ box-shadow: 0 0 40px #ff4400; }
+ @keyframes pulse { 0% { opacity: 0.3; transform: scale(0.95); } 100% { opacity: 0.8;
+ transform: scale(1.1); } }
  #branding-container {
  position: absolute;
  bottom: 25px; left: 25px;
@@ -272,14 +280,17 @@
  flex-direction: column; gap: 8px; z-index: 30;
  }
  .credits-text { font-size: 18px; letter-spacing: 2px; color: rgba(255,255,255,0.6);
- text-shadow: 1px 1px 3px #000; }
+ text-shadow: 1px 1px 3px #000;
+ }
  .review-btn {
  background: rgba(255, 255, 255, 0.05);
  border: 1px solid rgba(255,255,255,0.3); color: rgba(255,255,255,0.8);
- padding: 6px 14px; font-size: 13px; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; width: fit-content;
+ padding: 6px 14px; font-size: 13px;
+ cursor: pointer; text-transform: uppercase; letter-spacing: 1px; width: fit-content;
  transition: all 0.2s;
  }
- .review-btn:hover { background: #ff4400; color: white; border-color: #ff4400; box-shadow: 0 0 10px rgba(255,68,0,0.5); }
+ .review-btn:hover { background: #ff4400; color: white; border-color: #ff4400;
+ box-shadow: 0 0 10px rgba(255,68,0,0.5); }
  #prologue-screen {
  position: absolute;
  top: 0; left: 0; width: 100%; height: 100%;
@@ -361,7 +372,8 @@
  font-size: 18px;
  transition: all 0.2s;
  }
- .nav-btn:hover { background: white; color: black; box-shadow: 0 0 10px white; }
+ .nav-btn:hover { background: white; color: black; box-shadow: 0 0 10px white;
+ }
  #test-arena-btn {
  position: absolute;
  bottom: 30px;
@@ -372,7 +384,8 @@
  z-index: 50;
  box-shadow: 0 0 15px rgba(0, 255, 204, 0.3);
  }
- #test-arena-btn:hover { background: #00ffcc; color: #000; box-shadow: 0 0 25px #00ffcc; }
+ #test-arena-btn:hover { background: #00ffcc; color: #000; box-shadow: 0 0 25px #00ffcc;
+ }
  #ambient-toggle-container {
  position: absolute;
  top: 20px;
@@ -410,7 +423,8 @@
  .health-fill { width: 100%; height: 100%; background: #ff0000; transition: width 0.1s; }
  .health-val {
  position: absolute;
- width: 100%; height: 100%;
+ width: 100%;
+ height: 100%;
  top: 0;
  left: 0;
  text-align: center;
@@ -464,7 +478,8 @@
  }
  .shop-container::-webkit-scrollbar, .vault-container::-webkit-scrollbar { width: 14px; }
  .shop-container::-webkit-scrollbar-track, .vault-container::-webkit-scrollbar-track { background: #111; border-radius: 8px; }
- .shop-container::-webkit-scrollbar-thumb, .vault-container::-webkit-scrollbar-thumb { background: #ff4400; border-radius: 8px; border: 3px solid #111; }
+ .shop-container::-webkit-scrollbar-thumb, .vault-container::-webkit-scrollbar-thumb { background: #ff4400;
+ border-radius: 8px; border: 3px solid #111; }
  .shop-container::-webkit-scrollbar-thumb:hover, .vault-container::-webkit-scrollbar-thumb:hover { background: #ff6600; }
  .shop-tabs, .vault-tabs {
  display: flex;
@@ -509,7 +524,8 @@
  box-shadow: 0 5px 10px rgba(0,0,0,0.4);
  }
  .target {
- width: 55px; height: 55px;
+ width: 55px;
+ height: 55px;
  background: #b57a4c; border: 4px solid #5c3a21;
  box-shadow: 0 5px 10px rgba(0,0,0,0.5);
  display: flex; justify-content: center; align-items: center;
@@ -518,9 +534,11 @@
  .dummy {
  width: 40px; height: 90px;
  background: linear-gradient(to right, #8a5a36, #5c3a21);
- border-radius: 6px; box-shadow: 0 5px 10px rgba(0,0,0,0.5); position: relative;
+ border-radius: 6px; box-shadow: 0 5px 10px rgba(0,0,0,0.5);
+ position: relative;
  }
- .dummy::before { content: ''; position: absolute; top: 25px; left: -25px; width: 90px; height: 12px; background: #5c3a21; border-radius: 4px; }
+ .dummy::before { content: ''; position: absolute; top: 25px; left: -25px; width: 90px; height: 12px; background: #5c3a21;
+ border-radius: 4px; }
  .boss { position: absolute; font-size: 90px; transition: all 0.8s ease; z-index: 12; filter: drop-shadow(0 0 20px red); }
  .fireball { width: 40px; height: 40px; background: radial-gradient(circle, #fff, #ff6600, #990000); border-radius: 50%; box-shadow: 0 0 25px #ff3300; }
  .dojo-demon { position: absolute; font-size: 45px; z-index: 16; filter: drop-shadow(0 0 10px #ff3300); cursor: crosshair; }
@@ -528,14 +546,16 @@
  position: absolute;
  pointer-events: none; height: 5px;
  background: var(--trail-color); box-shadow: 0 0 12px var(--trail-color);
- transform-origin: left center; opacity: 0; z-index: 50;
+ transform-origin: left center;
+ opacity: 0; z-index: 50;
  }
  </style>
 </head>
 <body>
 <div id="fullscreen-overlay">
  <h1>FULLSCREEN REQUIRED</h1>
- <p>To experience Dojo Slicer properly, please enable fullscreen mode. Mobile devices will be automatically optimized to horizontal landscape alignment to perfectly fit the aspect ratio.</p>
+ <p>To experience Dojo Slicer properly, please enable fullscreen mode.
+ Mobile devices will be automatically optimized to horizontal landscape alignment to perfectly fit the aspect ratio.</p>
  <button class="aura-btn" onclick="enterFullscreenAndStart()">Enable Fullscreen</button>
 </div>
 <div id="game-container">
@@ -635,6 +655,7 @@
  <button class="nav-btn" onclick="closeSubMenus()" style="margin-top:20px;">Return to Training</button>
  </div>
  <div id="menu-vault" class="screen hidden">
+ 
  <div class="vault-container">
  <h2 style="color:#33ff99; font-size: 30px; margin-top: 0;">Equipment Vault & Settings</h2>
  <div style="background: #1a1a1a; padding:15px; border-radius:6px; margin-bottom:20px; border:1px solid #2d2d2d; display:flex; justify-content:space-between; align-items:center;">
@@ -694,7 +715,6 @@
  let currentTrack = 'default';
  let unlockedBackgrounds = ['default'];
  let currentBackground = 'default';
-
  // MP3 Audio element for Original Training Arc track
  let defaultTrackAudio = new Audio('9jackjack8-japanese-trap-beat-272645.mp3');
  defaultTrackAudio.loop = true;
@@ -708,6 +728,7 @@
  lightning: { name: "Lightning Flash", trail: "#00ccff", cost: 22000, desc: "Ionic discharge trace. Buff: +2 Base Damage" },
  gold: { name: "Midas Spark", trail: "#ffcc00", cost: 30000, desc: "Transmuted hyper-dense assetry. Buff: Double Coin Yields" }
  };
+
  const trackCatalog = {
  default: { name: "Original Training Arc", cost: 0, desc: "Standard rhythmic cadence." },
  nature: { name: "Nature Ambience", cost: 3000, desc: "Soft atmospheric ambient context tones." },
@@ -716,8 +737,9 @@
  wrath: { name: "Demon's Wrath", cost: 15000, desc: "Chaotic discordant war-drums profile." },
  breeze: { name: "Blossom Breeze", cost: 20000, desc: "Serene restorative meditation melodies." }
  };
+
  const backgroundCatalog = {
- default: { name: "Bamboo Dojo", cost: 0, desc: "Traditional clean balance room." },
+ default: { name: "Destroyed Dojo", cost: 0, desc: "Demons have overrun the earth." },
  sakura: { name: "Sakura Garden", cost: 6000, desc: "Fallen fields. Buff: Spawns objects faster" },
  underworld: { name: "Underworld Pit", cost: 15000, desc: "Abyssal furnace. Buff: Hyper-frequent demon raids!" },
  peaks: { name: "Frozen Peaks", cost: 22000, desc: "Glacial spires. Buff: Double base scores value" },
@@ -758,7 +780,6 @@
  let audioCtx = null;
  let choirNodes = [];
  let ambientNoiseNode = null;
-
  function initAudio() {
  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
  if (audioCtx.state === 'suspended') audioCtx.resume();
@@ -841,7 +862,8 @@
  gain.gain.setValueAtTime(0.5, audioCtx.currentTime);
  gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.25);
  osc.connect(gain); gain.connect(audioCtx.destination);
- osc.start(); osc.stop(audioCtx.currentTime + 0.25);
+ osc.start();
+ osc.stop(audioCtx.currentTime + 0.25);
  if(cycle % 4 === 0) {
  let horn = audioCtx.createOscillator();
  let hornGain = audioCtx.createGain();
@@ -914,7 +936,8 @@
  osc.frequency.exponentialRampToValueAtTime(60, audioCtx.currentTime + 0.35);
  gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
  gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.35);
- osc.connect(gain); gain.connect(audioCtx.destination);
+ osc.connect(gain);
+ gain.connect(audioCtx.destination);
  osc.start(); osc.stop(audioCtx.currentTime + 0.35);
  }
  function playBossHitSound() {
@@ -943,7 +966,8 @@
  gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
  gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
  osc.connect(gain); gain.connect(audioCtx.destination);
- osc.start(); osc.stop(audioCtx.currentTime + 0.1);
+ osc.start();
+ osc.stop(audioCtx.currentTime + 0.1);
  }
  function buildDojoAudioDropdown() {
  const dropdown = document.getElementById("dojo-music-dropdown");
@@ -1015,7 +1039,6 @@
  setTimeout(() => { text.style.opacity = 0; setTimeout(() => text.remove(), 1600); }, 3500);
  }
  loreInterval = setInterval(showLore, 2000);
-
  function startGame() {
  playClickSound();
  document.getElementById("main-menu-container").classList.add("hidden");
@@ -1139,31 +1162,43 @@
  }
  }
  function toggleDojoVisuals(show) {
- const displayStyle = show ? "block" : "none";
- document.getElementById("dojo-floor").style.display = displayStyle;
- document.getElementById("dojo-left-banner").style.display = displayStyle;
- document.getElementById("dojo-right-banner").style.display = displayStyle;
  let bg = document.getElementById("ominous-bg");
  let featureContainer = document.getElementById("bg-features-layer");
  featureContainer.innerHTML = "";
  if(show) {
+ let showProps = (currentBackground === 'default') ? "none" : "block";
+ document.getElementById("dojo-floor").style.display = showProps;
+ document.getElementById("dojo-left-banner").style.display = showProps;
+ document.getElementById("dojo-right-banner").style.display = showProps;
+
  if (currentBackground === 'sakura') {
  bg.style.background = "radial-gradient(circle, #2b1520 0%, #10050c 80%)";
- for(let i=0; i<15; i++) { let petal = document.createElement("div"); petal.className = "sakura-petal-node"; petal.style.left = Math.random() * 100 + "%"; petal.style.top = Math.random() * 80 + "%"; petal.style.animationDelay = (Math.random() * 5) + "s"; featureContainer.appendChild(petal); }
+ for(let i=0; i<15; i++) { let petal = document.createElement("div"); petal.className = "sakura-petal-node"; petal.style.left = Math.random() * 100 + "%";
+ petal.style.top = Math.random() * 80 + "%"; petal.style.animationDelay = (Math.random() * 5) + "s"; featureContainer.appendChild(petal);
+ }
  } else if (currentBackground === 'underworld') {
  bg.style.background = "radial-gradient(circle, #3a0000 0%, #0a0000 80%)";
- let pit = document.createElement("div"); pit.className = "lava-wave"; featureContainer.appendChild(pit);
+ let pit = document.createElement("div");
+ pit.className = "lava-wave"; featureContainer.appendChild(pit);
  } else if (currentBackground === 'peaks') {
  bg.style.background = "radial-gradient(circle, #102035 0%, #020810 80%)";
- for(let i=0; i<8; i++) { let spire = document.createElement("div"); spire.className = "ice-spike"; spire.style.left = (i * 15) + 5 + "%"; spire.style.bottom = "34%"; featureContainer.appendChild(spire); }
+ for(let i=0; i<8; i++) { let spire = document.createElement("div"); spire.className = "ice-spike";
+ spire.style.left = (i * 15) + 5 + "%"; spire.style.bottom = "34%"; featureContainer.appendChild(spire);
+ }
  } else if (currentBackground === 'shrine') {
  bg.style.background = "radial-gradient(circle, #25103a 0%, #070210 80%)";
- let gate = document.createElement("div"); gate.className = "shrine-gate"; featureContainer.appendChild(gate);
+ let gate = document.createElement("div");
+ gate.className = "shrine-gate"; featureContainer.appendChild(gate);
  } else {
- bg.style.background = "#1a110b";
- for(let i=0; i<12; i++) { let b = document.createElement("div"); b.className = "bamboo-shoot"; b.style.left = (i * 9) + 3 + "%"; b.style.height = (Math.random() * 40 + 30) + "%"; featureContainer.appendChild(b); }
+ bg.style.background = "url('Dojo-main-background.png') center center no-repeat #050505";
+ bg.style.backgroundSize = "contain";
  }
- } else { bg.style.background = "radial-gradient(circle, #1a0505 0%, #000 80%)"; }
+ } else { 
+ bg.style.background = "radial-gradient(circle, #1a0505 0%, #000 80%)"; 
+ document.getElementById("dojo-floor").style.display = "none";
+ document.getElementById("dojo-left-banner").style.display = "none";
+ document.getElementById("dojo-right-banner").style.display = "none";
+ }
  }
  function closeSubMenus() { playClickSound(); changeState('DOJO'); }
  function closeGameOver() { playClickSound(); document.getElementById("menu-gameover").classList.add("hidden"); changeState('DOJO'); }
@@ -1191,7 +1226,8 @@
  }
  }
  if (state === "ADVENTURE") {
- bossEntities.forEach(b => { b.el.style.left = `calc(${b.x}% + ${offsetLeftPadding}px)`; if(Math.random() < 0.02) b.x = Math.random() * 60 + 10; });
+ bossEntities.forEach(b => { b.el.style.left = `calc(${b.x}% + ${offsetLeftPadding}px)`;
+ if(Math.random() < 0.02) b.x = Math.random() * 60 + 10; });
  }
  }, 16);
  }
@@ -1200,7 +1236,8 @@
  let el = document.createElement("div");
  el.className = "floating-text"; el.innerText = textVal;
  el.style.left = x + "px"; el.style.top = y + "px";
- if (isCrit) { el.style.color = "#ff33ff"; el.style.textShadow = "2px 2px 0px #000, 0 0 15px #ff00ff"; }
+ if (isCrit) { el.style.color = "#ff33ff";
+ el.style.textShadow = "2px 2px 0px #000, 0 0 15px #ff00ff"; }
  document.getElementById("game-container").appendChild(el);
  setTimeout(() => { el.style.transform = "translateY(-80px) scale(1.3)"; el.style.opacity = "0"; }, 10);
  setTimeout(() => el.remove(), 700);
@@ -1232,7 +1269,8 @@
  function initBoss() { clearBosses(); createBossEntity(45); triggerBossFireballLoop(); }
  function createBossEntity(leftPct) {
  let el = document.createElement("div");
- el.className = "boss"; el.innerHTML = "👹";
+ el.className = "boss";
+ el.innerHTML = "👹";
  document.getElementById("game-container").appendChild(el);
  el.style.top = "15%";
  bossEntities.push({ el, x: leftPct });
@@ -1261,7 +1299,8 @@
  drop.className = "blood-drop"; drop.style.left = targetLocalX + "px"; drop.style.top = targetLocalY + "px";
  document.getElementById("game-container").appendChild(drop);
  let pVx = (Math.random() - 0.5) * 8; let pVy = (Math.random() - 0.7) * 10;
- let currentDropX = targetLocalX; let currentDropY = targetLocalY; let particleTicks = 0;
+ let currentDropX = targetLocalX;
+ let currentDropY = targetLocalY; let particleTicks = 0;
  let pInterval = setInterval(() => {
  if (isPaused) return;
  pVy += 0.4; currentDropX += pVx; currentDropY += pVy;
@@ -1344,7 +1383,8 @@
  let environmentalMultiplier = (currentBackground === 'underworld') ? 2 : (currentBackground === 'peaks' ? 2 : 1);
  let doubleMultiplier = (currentCosmetic === 'gold') ? 2 : 1;
  let activeComboMult = 1.0;
- if(state === "DOJO" || state === "TEST_ARENA") { activeComboMult = advanceCombo(); if (activeComboMult > maxHitMultiplier) maxHitMultiplier = activeComboMult; }
+ if(state === "DOJO" || state === "TEST_ARENA") { activeComboMult = advanceCombo();
+ if (activeComboMult > maxHitMultiplier) maxHitMultiplier = activeComboMult; }
  let coinGain = Math.floor(((((baseCoins * coinMultiplier) + cosmeticBonus) * environmentalMultiplier) * doubleMultiplier) * activeComboMult);
  coins += coinGain;
  objectHitThisFrame = true;
@@ -1374,7 +1414,8 @@
  if (objectHitThisFrame) {
  playCleanSlicingSound();
  triggerHitStop(40);
- if (maxHitMultiplier >= 1.8 || state === "TEST_ARENA") { document.getElementById("game-container").classList.add("shake-intense"); setTimeout(() => document.getElementById("game-container").classList.remove("shake-intense"), 150); }
+ if (maxHitMultiplier >= 1.8 || state === "TEST_ARENA") { document.getElementById("game-container").classList.add("shake-intense"); setTimeout(() => document.getElementById("game-container").classList.remove("shake-intense"), 150);
+ }
  }
  lastX = localCurrentX; lastY = localCurrentY;
  }
@@ -1388,9 +1429,12 @@
  document.getElementById("boss-health-text").innerText = clampedBossHp + " / " + bossMaxHp;
  }
  function buyUpgrade(t) {
- if(t === 'dmg' && coins >= costDmg) { coins -= costDmg; playerDmg++; costDmg = Math.floor(costDmg * 2.2); playHitSound("target"); }
- if(t === 'hp' && coins >= costHp) { coins -= costHp; maxHp += 20; costHp = Math.floor(costHp * 2.2); playHitSound("target"); }
- if(t === 'mult' && coins >= costMult) { coins -= costMult; coinMultiplier += 1; costMult = Math.floor(costMult * 2.5); playHitSound("target"); }
+ if(t === 'dmg' && coins >= costDmg) { coins -= costDmg;
+ playerDmg++; costDmg = Math.floor(costDmg * 2.2); playHitSound("target"); }
+ if(t === 'hp' && coins >= costHp) { coins -= costHp;
+ maxHp += 20; costHp = Math.floor(costHp * 2.2); playHitSound("target"); }
+ if(t === 'mult' && coins >= costMult) { coins -= costMult;
+ coinMultiplier += 1; costMult = Math.floor(costMult * 2.5); playHitSound("target"); }
  document.getElementById("shop-coins").innerText = coins;
  document.getElementById("coin-txt").innerText = coins;
  document.getElementById("cost-dmg").innerText = costDmg;
@@ -1410,7 +1454,9 @@
  if(stageBox.innerHTML === "") stageBox.innerHTML = "<p style='padding:15px; color:#aaa;'>All regional dojo matrices opened.</p>";
  }
  function processStorePurchase(category, key, cost) {
- if(coins >= cost) { coins -= cost; playHitSound("target"); if(category === 'cosmetic') unlockedCosmetics.push(key); if(category === 'music') unlockedTracks.push(key); if(category === 'stage') unlockedBackgrounds.push(key); renderShopElements(); document.getElementById("coin-txt").innerText = coins; }
+ if(coins >= cost) { coins -= cost; playHitSound("target"); if(category === 'cosmetic') unlockedCosmetics.push(key);
+ if(category === 'music') unlockedTracks.push(key); if(category === 'stage') unlockedBackgrounds.push(key); renderShopElements(); document.getElementById("coin-txt").innerText = coins;
+ }
  }
  function renderVaultElements() {
  let cosVault = document.getElementById("vault-cosmetics"); cosVault.innerHTML = "";
@@ -1422,13 +1468,16 @@
  }
  function equipVaultAsset(category, key) {
  playClickSound();
- if(category === 'cosmetic') { currentCosmetic = key; document.documentElement.style.setProperty('--trail-color', cosmeticCatalog[key].trail); updateBars(); }
+ if(category === 'cosmetic') { currentCosmetic = key; document.documentElement.style.setProperty('--trail-color', cosmeticCatalog[key].trail); updateBars();
+ }
  if(category === 'music') { currentTrack = key; }
  if(category === 'stage') { currentBackground = key; }
  renderVaultElements();
  }
  function checkDeath() { if(currentHp <= 0) { stopMusic(); clearBosses(); document.getElementById("menu-gameover").classList.remove("hidden"); state="DEAD"; } }
- function win() { stopMusic(); clearBosses(); document.getElementById("go-title").innerText = "VICTORY"; document.getElementById("go-title").style.color = "#33ff99"; document.getElementById("go-desc").innerText = "The Demon General falls broken before your blade! Your long training cycle yields completion."; document.getElementById("menu-gameover").classList.remove("hidden"); state="WIN"; }
+ function win() { stopMusic(); clearBosses();
+ document.getElementById("go-title").innerText = "VICTORY"; document.getElementById("go-title").style.color = "#33ff99"; document.getElementById("go-desc").innerText = "The Demon General falls broken before your blade! Your long training cycle yields completion.";
+ document.getElementById("menu-gameover").classList.remove("hidden"); state="WIN"; }
 
  window.addEventListener("mousedown", e => { if (isPaused) return; if (state === "MENU" && !audioCtx) playChoir(); isSwiping = true; let containerRect = document.getElementById("game-container").getBoundingClientRect(); lastX = e.clientX - containerRect.left; lastY = e.clientY - containerRect.top; });
  window.addEventListener("mousemove", e => handleMove(e.clientX, e.clientY));
@@ -1437,7 +1486,6 @@
  window.addEventListener("touchmove", e => handleMove(e.touches[0].clientX, e.touches[0].clientY));
  window.addEventListener("touchend", () => isSwiping = false);
  window.addEventListener("click", () => { if(state === "MENU" && choirNodes.length === 0 && !isPaused) playChoir(); });
-
  document.addEventListener("touchstart", e => { if (e.touches.length > 1) e.preventDefault(); }, { passive: false });
  document.addEventListener("touchmove", e => { e.preventDefault(); }, { passive: false });
  document.addEventListener("gesturestart", e => e.preventDefault());
@@ -1445,6 +1493,6 @@
  document.addEventListener("gestureend", e => e.preventDefault());
  let lastTouchEnd = 0;
  document.addEventListener('touchend', function (event) { const now = (new Date()).getTime(); if (now - lastTouchEnd <= 300) { event.preventDefault(); } lastTouchEnd = now; }, false);
-</script>
+ </script>
 </body>
 </html>
