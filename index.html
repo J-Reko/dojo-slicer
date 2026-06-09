@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<!-- skill:chrome -->
 <style>
 /* Credit line — bottom-right */
 .design-ui-credit {
@@ -43,10 +44,15 @@
     function initChromeUI() {
         if (!matchMedia('(hover: hover)').matches) return;
 
+        var credit = document.createElement('div');
+        credit.className = 'design-ui-credit';
+        credit.setAttribute('aria-hidden', 'true');
+        credit.innerHTML = '\u{1F49C} by ClickUp Brain';
+        document.body.appendChild(credit);
+
         var timer = null;
         var fade = function (out) { credit.style.opacity = out ? '0' : ''; };
         fade(true);
-      
         var show = function () {
             fade(false);
             clearTimeout(timer);
@@ -61,1438 +67,1816 @@
         initChromeUI();
     }
 })();
+
 </script>
+<!-- /skill:chrome -->
 <meta charset="UTF-8">
- <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
- <title>Dojo Slicer: Vengeance</title>
- <style>
- :root {
- --demon-red: #8b0000;
- --aura-color: rgba(255, 68, 0, 0.4);
- --trail-color: #ffffff;
- }
- body {
- margin: 0;
- overflow: hidden;
- background: #050505;
- color: white;
- font-family: 'Garamond', serif;
- user-select: none;
- touch-action: none;
- overscroll-behavior: none;
- display: flex;
- justify-content: center;
- align-items: center;
- height: 100vh;
- }
- #game-container {
- position: relative;
- width: 100vw;
- height: 100vh;
- overflow: hidden;
- }
- .shake-intense {
- animation: shake 0.15s cubic-bezier(.36,.07,.19,.97) both;
- }
- @keyframes shake {
- 0% { transform: translate(0, 0) rotate(0deg); }
- 20% { transform: translate(-4px, 4px) rotate(-1deg); }
- 40% { transform: translate(4px, -4px) rotate(1deg); }
- 60% { transform: translate(-4px, -4px) rotate(-1deg); }
- 80% { transform: translate(4px, 4px) rotate(1deg); }
- 100% { transform: translate(0, 0) rotate(0deg); }
- }
- .floating-text {
- position: absolute;
- font-size: 26px;
- font-weight: 900;
- color: #ffcc00;
- text-shadow: 2px 2px 0px #000, 0 0 10px #ff6600;
- pointer-events: none;
- z-index: 1000;
- transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.6s ease-in;
- }
- #vignette {
- position: absolute;
- top: 0; left: 0;
- width: 100%; height: 100%;
- box-shadow: inset 0 0 150px #000;
- pointer-events: none;
- z-index: 5;
- }
- #ominous-bg {
- position: absolute;
- width: 100%;
- height: 100%;
- background: radial-gradient(circle, #1a0505 0%, #000 80%);
- z-index: 0;
- transition: background 0.5s, filter 0.5s;
- }
- #bg-features-layer {
- position: absolute;
- top: 0; left: 0; width: 100%;
- height: 100%;
- z-index: 1;
- pointer-events: none;
- overflow: hidden;
- }
- .sim-grid {
- position: absolute;
- width: 200%; height: 200%;
- top: -50%; left: -50%;
- background-image:
- linear-gradient(rgba(0, 255, 200, 0.15) 1px, transparent 1px),
- linear-gradient(90deg, rgba(0, 255, 200, 0.15) 1px, transparent 1px);
- background-size: 50px 50px;
- transform: perspective(600px) rotateX(60deg);
- animation: gridMove 1.5s linear infinite;
- }
- @keyframes gridMove {
- 0% { transform: perspective(600px) rotateX(60deg) translateY(0); }
- 100% { transform: perspective(600px) rotateX(60deg) translateY(50px); }
- }
- .dojo-floor {
- position: absolute;
- bottom: 0; left: 0; width: 100%;
- height: 35%;
- background: linear-gradient(to bottom, #2b1a0e 0%, #140c06 100%);
- border-top: 4px solid #422815;
- box-shadow: inset 0 20px 30px rgba(0,0,0,0.8);
- display: none;
- z-index: 2;
- }
- .dojo-banner {
- position: absolute;
- top: 0; width: 40px; height: 70%;
- background: #660000;
- border-bottom: 15px solid #cc0000;
- border-left: 2px solid #330000;
- border-right: 2px solid #330000;
- box-shadow: 5px 5px 15px rgba(0,0,0,0.5);
- display: none;
- z-index: 2;
- }
- .bamboo-shoot {
- position: absolute; bottom: 35%;
- width: 12px; background: linear-gradient(90deg, #1e3d14, #2e5c20); border-radius: 4px; opacity: 0.35;
- }
- .sakura-petal-node {
- position: absolute; width: 8px; height: 8px; background: #ffb7c5;
- border-radius: 50% 0 50% 50%; opacity: 0.7;
- animation: petalFall 6s linear infinite;
- }
- .lava-wave {
- position: absolute; bottom: 0; left: 0; width: 100%;
- height: 12%;
- background: linear-gradient(0deg, #aa2200, transparent); opacity: 0.8; animation: pulseLava 2s ease-in-out infinite alternate;
- }
- .ice-spike {
- position: absolute; bottom: 35%;
- border-left: 15px solid transparent;
- border-right: 15px solid transparent; border-bottom: 70px solid rgba(135, 206, 235, 0.4);
- }
- .shrine-gate {
- position: absolute;
- top: 20%; left: 50%; transform: translateX(-50%);
- width: 200px; height: 160px; border-top: 14px solid #4a154b; border-left: 10px solid #2e0830;
- border-right: 10px solid #2e0830; opacity: 0.25;
- }
- @keyframes petalFall {
- 0% { transform: translateY(-50px) translateX(0) rotate(0deg); opacity: 0; }
- 10% { opacity: 0.7; }
- 100% { transform: translateY(100vh) translateX(150px) rotate(360deg); opacity: 0; }
- }
- @keyframes pulseLava { 0% { opacity: 0.5; } 100% { opacity: 0.9; } }
- .lore-text {
- position: absolute;
- color: rgba(220, 200, 200, 0.25);
- font-style: italic;
- font-size: 1.4rem;
- transition: opacity 1.5s ease-in-out;
- pointer-events: none;
- z-index: 2;
- text-shadow: 0px 0px 8px rgba(0, 0, 0, 0.9);
- white-space: nowrap;
- }
- #fullscreen-overlay {
- position: absolute;
- top: 0; left: 0;
- width: 100%; height: 100%;
- background: rgba(0, 0, 0, 0.95);
- z-index: 9999;
- display: flex;
- flex-direction: column;
- justify-content: center;
- align-items: center;
- color: white;
- text-align: center;
- }
- #fullscreen-overlay h1 {
- font-size: 36px;
- color: #ff4400; letter-spacing: 2px; margin-bottom: 20px;
- }
- #fullscreen-overlay p {
- font-size: 18px;
- margin-bottom: 30px; max-width: 600px; color: #ccc; padding: 0 20px; line-height: 1.5;
- }
- #main-menu-container {
- position: absolute;
- top: 0; left: 0; width: 100%; height: 100%;
- display: flex;
- justify-content: center;
- align-items: center;
- z-index: 10;
- }
- .aura-btn {
- position: relative;
- background: transparent;
- color: #fff;
- border: 2px solid #fff;
- padding: 20px 50px;
- font-size: 28px;
- letter-spacing: 4px;
- text-transform: uppercase;
- cursor: pointer;
- overflow: visible;
- transition: all 0.3s;
- z-index: 11;
- font-family: 'Garamond', serif;
- }
- .aura-btn::before {
- content: '';
- position: absolute;
- top: -10px;
- left: -10px; right: -10px; bottom: -10px;
- background: var(--aura-color);
- filter: blur(20px);
- border-radius: 10px;
- z-index: -1;
- animation: pulse 2s infinite alternate;
- }
- .aura-btn:hover { background: #fff; color: #000;
- box-shadow: 0 0 40px #ff4400; }
- @keyframes pulse { 0% { opacity: 0.3; transform: scale(0.95); } 100% { opacity: 0.8;
- transform: scale(1.1); } }
- #branding-container {
- position: absolute;
- bottom: 25px; left: 25px;
- display: flex;
- flex-direction: column; gap: 8px; z-index: 30;
- }
- .credits-text { font-size: 18px; letter-spacing: 2px; color: rgba(255,255,255,0.6);
- text-shadow: 1px 1px 3px #000;
- }
- .review-btn {
- background: rgba(255, 255, 255, 0.05);
- border: 1px solid rgba(255,255,255,0.3); color: rgba(255,255,255,0.8);
- padding: 6px 14px; font-size: 13px;
- cursor: pointer; text-transform: uppercase; letter-spacing: 1px; width: fit-content;
- transition: all 0.2s;
- }
- .review-btn:hover { background: #ff4400; color: white; border-color: #ff4400;
- box-shadow: 0 0 10px rgba(255,68,0,0.5); }
- #prologue-screen {
- position: absolute;
- top: 0; left: 0; width: 100%; height: 100%;
- background: black;
- z-index: 500;
- display: flex;
- flex-direction: column;
- justify-content: center;
- align-items: center;
- }
- #prologue-text {
- font-size: 26px;
- font-style: italic;
- color: #eee;
- text-align: center;
- max-width: 750px;
- line-height: 1.7;
- transition: opacity 0.8s ease-in-out;
- opacity: 0;
- padding: 0 30px;
- }
- .skip-btn-corner {
- position: absolute;
- bottom: 25px;
- left: 25px;
- font-size: 13px;
- padding: 6px 14px;
- border-color: #ff4400;
- color: #ff8855;
- background: rgba(0, 0, 0, 0.5);
- }
- #hud {
- position: absolute;
- top: 20px; left: 20px;
- font-size: 22px;
- z-index: 20;
- display: none;
- text-shadow: 2px 2px 5px #000;
- }
- #combo-ui {
- position: absolute;
- top: 20px;
- left: 50%;
- transform: translateX(-50%);
- font-size: 32px;
- font-weight: bold;
- color: #ffcc00;
- text-align: center;
- z-index: 25;
- display: none;
- text-shadow: 0px 0px 12px rgba(255, 204, 0, 0.6), 2px 2px 4px #000;
- pointer-events: none;
- transition: transform 0.1s ease-out;
- }
- #combo-mult {
- font-size: 16px;
- color: #ff4400;
- display: block;
- margin-top: 2px;
- letter-spacing: 1px;
- }
- #mode-nav {
- position: absolute;
- bottom: 30px;
- width: 100%;
- display: flex;
- justify-content: center;
- gap: 15px;
- z-index: 20;
- display: none;
- }
- .nav-btn {
- background: rgba(0, 0, 0, 0.6);
- color: white;
- border: 1px solid white;
- padding: 12px 24px;
- cursor: pointer;
- font-family: 'Garamond', serif;
- font-size: 18px;
- transition: all 0.2s;
- }
- .nav-btn:hover { background: white; color: black; box-shadow: 0 0 10px white;
- }
- #test-arena-btn {
- position: absolute;
- bottom: 30px;
- left: 30px;
- border-color: #00ffcc;
- color: #00ffcc;
- display: none;
- z-index: 50;
- box-shadow: 0 0 15px rgba(0, 255, 204, 0.3);
- }
- #test-arena-btn:hover { background: #00ffcc; color: #000; box-shadow: 0 0 25px #00ffcc;
- }
- #ambient-toggle-container {
- position: absolute;
- top: 20px;
- right: 20px;
- z-index: 25;
- display: none;
- text-align: right;
- }
- #dojo-music-dropdown {
- background: #111;
- color: #fff;
- border: 1px solid #ff4400;
- padding: 6px 12px;
- font-family: 'Garamond', serif;
- font-size: 15px;
- cursor: pointer;
- outline: none;
- }
- #boss-hud {
- position: absolute;
- top: 20px; right: 20px;
- text-align: right;
- z-index: 20;
- display: none;
- }
- .health-bar {
- width: 250px;
- height: 18px;
- background: #333;
- border: 1px solid #fff;
- margin-top: 8px;
- position: relative;
- box-shadow: 0 0 8px rgba(0,0,0,0.5);
- }
- .health-fill { width: 100%; height: 100%; background: #ff0000; transition: width 0.1s; }
- .health-val {
- position: absolute;
- width: 100%;
- height: 100%;
- top: 0;
- left: 0;
- text-align: center;
- font-size: 13px;
- font-weight: bold;
- line-height: 18px;
- color: white;
- text-shadow: 1px 1px 2px #000;
- }
- #boss-hints {
- position: absolute;
- left: 30px;
- top: 35%;
- display: flex;
- flex-direction: column;
- gap: 15px;
- z-index: 20;
- display: none;
- pointer-events: none;
- }
- .hint-card {
- background: rgba(0, 0, 0, 0.65);
- border-left: 4px solid #ff4400;
- padding: 12px 20px;
- font-size: 16px;
- max-width: 280px;
- letter-spacing: 1px;
- line-height: 1.4;
- text-shadow: 1px 1px 2px #000;
- box-shadow: 5px 5px 15px rgba(0,0,0,0.4);
- }
- .screen {
- position: absolute;
- top: 0; left: 0; width: 100%; height: 100%;
- display: flex;
- flex-direction: column;
- justify-content: center;
- align-items: center;
- background: rgba(5,5,5,0.95);
- z-index: 100;
- }
- .hidden { display: none !important; }
- .shop-container, .vault-container {
- background: #111;
- padding: 30px;
- border-radius: 12px;
- border: 1px solid #333;
- width: 700px;
- max-height: 75vh;
- overflow-y: auto;
- }
- .shop-container::-webkit-scrollbar, .vault-container::-webkit-scrollbar { width: 14px; }
- .shop-container::-webkit-scrollbar-track, .vault-container::-webkit-scrollbar-track { background: #111; border-radius: 8px; }
- .shop-container::-webkit-scrollbar-thumb, .vault-container::-webkit-scrollbar-thumb { background: #ff4400;
- border-radius: 8px; border: 3px solid #111; }
- .shop-container::-webkit-scrollbar-thumb:hover, .vault-container::-webkit-scrollbar-thumb:hover { background: #ff6600; }
- .shop-tabs, .vault-tabs {
- display: flex;
- gap: 10px;
- margin-bottom: 20px;
- border-bottom: 1px solid #333;
- padding-bottom: 10px;
- }
- .tab-btn {
- background: #1e1e1e;
- color: #aaa;
- border: 1px solid #444;
- padding: 8px 16px;
- cursor: pointer;
- font-family: 'Garamond', serif;
- font-size: 16px;
- }
- .tab-btn.active { background: #ff4400; color: white; border-color: #ff4400; }
- .shop-grid, .vault-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
- .shop-item, .vault-item {
- background: #1a1a1a;
- border: 1px solid #2d2d2d;
- padding: 15px;
- display: flex;
- justify-content: space-between;
- align-items: center;
- border-radius: 6px;
- }
- .blood-drop {
- position: absolute;
- width: 6px; height: 6px;
- background: #b30000;
- border-radius: 50%;
- pointer-events: none;
- z-index: 60;
- }
- .object { position: absolute; z-index: 30; }
- .balloon {
- width: 50px; height: 65px;
- background: radial-gradient(circle at 50% 30%, #33aaff 0%, #0044aa 80%);
- border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
- box-shadow: 0 5px 10px rgba(0,0,0,0.4);
- }
- .target {
- width: 55px;
- height: 55px;
- background: #b57a4c; border: 4px solid #5c3a21;
- box-shadow: 0 5px 10px rgba(0,0,0,0.5);
- display: flex; justify-content: center; align-items: center;
- }
- .target::before { content: ''; width: 30px; height: 30px; border: 4px solid #cc0000; border-radius: 50%; background: white; }
- .dummy {
- width: 40px; height: 90px;
- background: linear-gradient(to right, #8a5a36, #5c3a21);
- border-radius: 6px; box-shadow: 0 5px 10px rgba(0,0,0,0.5);
- position: relative;
- }
- .dummy::before { content: ''; position: absolute; top: 25px; left: -25px; width: 90px; height: 12px; background: #5c3a21;
- border-radius: 4px; }
- .boss { position: absolute; font-size: 90px; transition: all 0.8s ease; z-index: 12; filter: drop-shadow(0 0 20px red); }
- .fireball { width: 40px; height: 40px; background: radial-gradient(circle, #fff, #ff6600, #990000); border-radius: 50%; box-shadow: 0 0 25px #ff3300; }
- .dojo-demon { position: absolute; font-size: 45px; z-index: 16; filter: drop-shadow(0 0 10px #ff3300); cursor: crosshair; }
- #slash {
- position: absolute;
- pointer-events: none; height: 5px;
- background: var(--trail-color); box-shadow: 0 0 12px var(--trail-color);
- transform-origin: left center;
- opacity: 0; z-index: 50;
- }
- </style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Dojo Slicer: Vengeance</title>
+<style>
+:root {
+  --demon-red: #8b0000;
+  --aura-color: rgba(255, 68, 0, 0.4);
+  --trail-color: #ffffff;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  overflow: hidden;
+  background: #050505;
+  color: white;
+  font-family: 'Garamond', serif;
+  user-select: none;
+  touch-action: none;
+  overscroll-behavior: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+#game-container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  will-change: transform;
+}
+
+.shake-intense {
+  animation: shake 0.15s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+@keyframes shake {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  20% { transform: translate(-4px, 4px) rotate(-1deg); }
+  40% { transform: translate(4px, -4px) rotate(1deg); }
+  60% { transform: translate(-4px, -4px) rotate(-1deg); }
+  80% { transform: translate(4px, 4px) rotate(1deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+.floating-text {
+  position: absolute;
+  font-size: 26px;
+  font-weight: 900;
+  color: #ffcc00;
+  text-shadow: 2px 2px 0px #000, 0 0 10px #ff6600;
+  pointer-events: none;
+  z-index: 1000;
+  will-change: transform, opacity;
+  transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.6s ease-in;
+}
+
+#vignette {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  box-shadow: inset 0 0 150px #000;
+  pointer-events: none;
+  z-index: 5;
+}
+
+#ominous-bg {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, #1a0505 0%, #000 80%);
+  z-index: 0;
+  transition: background 0.5s, filter 0.5s;
+}
+
+#bg-features-layer {
+  position: absolute;
+  top: 0; left: 0; width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.sim-grid {
+  position: absolute;
+  width: 200%; height: 200%;
+  top: -50%; left: -50%;
+  background-image:
+    linear-gradient(rgba(0, 255, 200, 0.15) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 200, 0.15) 1px, transparent 1px);
+  background-size: 50px 50px;
+  transform: perspective(600px) rotateX(60deg);
+  animation: gridMove 1.5s linear infinite;
+  will-change: transform;
+}
+
+@keyframes gridMove {
+  0% { transform: perspective(600px) rotateX(60deg) translateY(0); }
+  100% { transform: perspective(600px) rotateX(60deg) translateY(50px); }
+}
+
+.dojo-floor {
+  position: absolute;
+  bottom: 0; left: 0; width: 100%;
+  height: 35%;
+  background: linear-gradient(to bottom, #2b1a0e 0%, #140c06 100%);
+  border-top: 4px solid #422815;
+  box-shadow: inset 0 20px 30px rgba(0,0,0,0.8);
+  display: none;
+  z-index: 2;
+}
+
+.dojo-banner {
+  position: absolute;
+  top: 0; width: 40px; height: 70%;
+  background: #660000;
+  border-bottom: 15px solid #cc0000;
+  border-left: 2px solid #330000;
+  border-right: 2px solid #330000;
+  box-shadow: 5px 5px 15px rgba(0,0,0,0.5);
+  display: none;
+  z-index: 2;
+}
+
+.sakura-petal-node {
+  position: absolute;
+  width: 8px; height: 8px;
+  background: #ffb7c5;
+  border-radius: 50% 0 50% 50%;
+  opacity: 0.7;
+  animation: petalFall 6s linear infinite;
+  will-change: transform, opacity;
+}
+
+.lava-wave {
+  position: absolute; bottom: 0; left: 0; width: 100%;
+  height: 12%;
+  background: linear-gradient(0deg, #aa2200, transparent);
+  opacity: 0.8;
+  animation: pulseLava 2s ease-in-out infinite alternate;
+}
+
+.ice-spike {
+  position: absolute; bottom: 35%;
+  border-left: 15px solid transparent;
+  border-right: 15px solid transparent;
+  border-bottom: 70px solid rgba(135, 206, 235, 0.4);
+}
+
+.shrine-gate {
+  position: absolute;
+  top: 20%; left: 50%; transform: translateX(-50%);
+  width: 200px; height: 160px;
+  border-top: 14px solid #4a154b;
+  border-left: 10px solid #2e0830;
+  border-right: 10px solid #2e0830;
+  opacity: 0.25;
+}
+
+@keyframes petalFall {
+  0% { transform: translateY(-50px) translateX(0) rotate(0deg); opacity: 0; }
+  10% { opacity: 0.7; }
+  100% { transform: translateY(100vh) translateX(150px) rotate(360deg); opacity: 0; }
+}
+
+@keyframes pulseLava { 0% { opacity: 0.5; } 100% { opacity: 0.9; } }
+
+.lore-text {
+  position: absolute;
+  color: rgba(220, 200, 200, 0.25);
+  font-style: italic;
+  font-size: 1.4rem;
+  transition: opacity 1.5s ease-in-out;
+  pointer-events: none;
+  z-index: 2;
+  text-shadow: 0px 0px 8px rgba(0, 0, 0, 0.9);
+  white-space: nowrap;
+}
+
+#fullscreen-overlay {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.95);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  text-align: center;
+}
+
+#fullscreen-overlay h1 {
+  font-size: 36px;
+  color: #ff4400;
+  letter-spacing: 2px;
+  margin-bottom: 20px;
+}
+
+#fullscreen-overlay p {
+  font-size: 18px;
+  margin-bottom: 30px;
+  max-width: 600px;
+  color: #ccc;
+  padding: 0 20px;
+  line-height: 1.5;
+}
+
+#main-menu-container {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+}
+
+.aura-btn {
+  position: relative;
+  background: transparent;
+  color: #fff;
+  border: 2px solid #fff;
+  padding: 20px 50px;
+  font-size: 28px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  cursor: pointer;
+  overflow: visible;
+  transition: all 0.3s;
+  z-index: 11;
+  font-family: 'Garamond', serif;
+}
+
+.aura-btn::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: -10px; right: -10px; bottom: -10px;
+  background: var(--aura-color);
+  filter: blur(20px);
+  border-radius: 10px;
+  z-index: -1;
+  animation: pulse 2s infinite alternate;
+}
+
+.aura-btn:hover {
+  background: #fff;
+  color: #000;
+  box-shadow: 0 0 40px #ff4400;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.3; transform: scale(0.95); }
+  100% { opacity: 0.8; transform: scale(1.1); }
+}
+
+#branding-container {
+  position: absolute;
+  bottom: 25px; left: 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 30;
+}
+
+.credits-text {
+  font-size: 18px;
+  letter-spacing: 2px;
+  color: rgba(255,255,255,0.6);
+  text-shadow: 1px 1px 3px #000;
+}
+
+.review-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: rgba(255,255,255,0.8);
+  padding: 6px 14px;
+  font-size: 13px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  width: fit-content;
+  transition: all 0.2s;
+}
+
+.review-btn:hover {
+  background: #ff4400;
+  color: white;
+  border-color: #ff4400;
+  box-shadow: 0 0 10px rgba(255,68,0,0.5);
+}
+
+#prologue-screen {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: black;
+  z-index: 500;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#prologue-text {
+  font-size: 26px;
+  font-style: italic;
+  color: #eee;
+  text-align: center;
+  max-width: 750px;
+  line-height: 1.7;
+  transition: opacity 0.8s ease-in-out;
+  opacity: 0;
+  padding: 0 30px;
+}
+
+.skip-btn-corner {
+  position: absolute;
+  bottom: 25px;
+  left: 25px;
+  font-size: 13px;
+  padding: 6px 14px;
+  border-color: #ff4400;
+  color: #ff8855;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+#hud {
+  position: absolute;
+  top: 20px; left: 20px;
+  font-size: 22px;
+  z-index: 20;
+  display: none;
+  text-shadow: 2px 2px 5px #000;
+}
+
+#combo-ui {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 32px;
+  font-weight: bold;
+  color: #ffcc00;
+  text-align: center;
+  z-index: 25;
+  display: none;
+  text-shadow: 0px 0px 12px rgba(255, 204, 0, 0.6), 2px 2px 4px #000;
+  pointer-events: none;
+  transition: transform 0.1s ease-out;
+}
+
+#combo-mult {
+  font-size: 16px;
+  color: #ff4400;
+  display: block;
+  margin-top: 2px;
+  letter-spacing: 1px;
+}
+
+#mode-nav {
+  position: absolute;
+  bottom: 30px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  z-index: 20;
+  display: none;
+}
+
+.nav-btn {
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  border: 1px solid white;
+  padding: 12px 24px;
+  cursor: pointer;
+  font-family: 'Garamond', serif;
+  font-size: 18px;
+  transition: all 0.2s;
+}
+
+.nav-btn:hover {
+  background: white;
+  color: black;
+  box-shadow: 0 0 10px white;
+}
+
+#test-arena-btn {
+  position: absolute;
+  bottom: 30px;
+  left: 30px;
+  border-color: #00ffcc;
+  color: #00ffcc;
+  display: none;
+  z-index: 50;
+  box-shadow: 0 0 15px rgba(0, 255, 204, 0.3);
+}
+
+#test-arena-btn:hover {
+  background: #00ffcc;
+  color: #000;
+  box-shadow: 0 0 25px #00ffcc;
+}
+
+#ambient-toggle-container {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 25;
+  display: none;
+  text-align: right;
+}
+
+#dojo-music-dropdown {
+  background: #111;
+  color: #fff;
+  border: 1px solid #ff4400;
+  padding: 6px 12px;
+  font-family: 'Garamond', serif;
+  font-size: 15px;
+  cursor: pointer;
+  outline: none;
+}
+
+#boss-hud {
+  position: absolute;
+  top: 20px; right: 20px;
+  text-align: right;
+  z-index: 20;
+  display: none;
+}
+
+.health-bar {
+  width: 250px;
+  height: 18px;
+  background: #333;
+  border: 1px solid #fff;
+  margin-top: 8px;
+  position: relative;
+  box-shadow: 0 0 8px rgba(0,0,0,0.5);
+}
+
+.health-fill {
+  width: 100%;
+  height: 100%;
+  background: #ff0000;
+  transition: width 0.15s ease-out;
+  will-change: width;
+}
+
+.health-val {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0; left: 0;
+  text-align: center;
+  font-size: 13px;
+  font-weight: bold;
+  line-height: 18px;
+  color: white;
+  text-shadow: 1px 1px 2px #000;
+}
+
+#boss-hints {
+  position: absolute;
+  left: 30px;
+  top: 35%;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  z-index: 20;
+  display: none;
+  pointer-events: none;
+}
+
+.hint-card {
+  background: rgba(0, 0, 0, 0.65);
+  border-left: 4px solid #ff4400;
+  padding: 12px 20px;
+  font-size: 16px;
+  max-width: 280px;
+  letter-spacing: 1px;
+  line-height: 1.4;
+  text-shadow: 1px 1px 2px #000;
+  box-shadow: 5px 5px 15px rgba(0,0,0,0.4);
+}
+
+.screen {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: rgba(5,5,5,0.95);
+  z-index: 100;
+}
+
+.hidden { display: none !important; }
+
+.shop-container, .vault-container {
+  background: #111;
+  padding: 30px;
+  border-radius: 12px;
+  border: 1px solid #333;
+  width: 700px;
+  max-height: 75vh;
+  overflow-y: auto;
+}
+
+.shop-container::-webkit-scrollbar, .vault-container::-webkit-scrollbar { width: 14px; }
+.shop-container::-webkit-scrollbar-track, .vault-container::-webkit-scrollbar-track { background: #111; border-radius: 8px; }
+.shop-container::-webkit-scrollbar-thumb, .vault-container::-webkit-scrollbar-thumb { background: #ff4400; border-radius: 8px; border: 3px solid #111; }
+.shop-container::-webkit-scrollbar-thumb:hover, .vault-container::-webkit-scrollbar-thumb:hover { background: #ff6600; }
+
+.shop-tabs, .vault-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #333;
+  padding-bottom: 10px;
+}
+
+.tab-btn {
+  background: #1e1e1e;
+  color: #aaa;
+  border: 1px solid #444;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-family: 'Garamond', serif;
+  font-size: 16px;
+  transition: background 0.2s, color 0.2s;
+}
+
+.tab-btn.active { background: #ff4400; color: white; border-color: #ff4400; }
+
+.shop-grid, .vault-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+
+.shop-item, .vault-item {
+  background: #1a1a1a;
+  border: 1px solid #2d2d2d;
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 6px;
+  transition: border-color 0.2s;
+}
+
+.shop-item:hover, .vault-item:hover { border-color: #444; }
+
+.object {
+  position: absolute;
+  z-index: 30;
+  will-change: transform, left, top;
+}
+
+.balloon {
+  width: 50px; height: 65px;
+  background: radial-gradient(circle at 50% 30%, #33aaff 0%, #0044aa 80%);
+  border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
+  box-shadow: 0 5px 10px rgba(0,0,0,0.4);
+}
+
+.target {
+  width: 55px; height: 55px;
+  background: #b57a4c;
+  border: 4px solid #5c3a21;
+  box-shadow: 0 5px 10px rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.target::before {
+  content: '';
+  width: 30px; height: 30px;
+  border: 4px solid #cc0000;
+  border-radius: 50%;
+  background: white;
+}
+
+.dummy {
+  width: 40px; height: 90px;
+  background: linear-gradient(to right, #8a5a36, #5c3a21);
+  border-radius: 6px;
+  box-shadow: 0 5px 10px rgba(0,0,0,0.5);
+  position: relative;
+}
+
+.dummy::before {
+  content: '';
+  position: absolute;
+  top: 25px; left: -25px;
+  width: 90px; height: 12px;
+  background: #5c3a21;
+  border-radius: 4px;
+}
+
+.boss {
+  position: absolute;
+  font-size: 90px;
+  transition: all 0.8s ease;
+  z-index: 12;
+  filter: drop-shadow(0 0 20px red);
+}
+
+.fireball {
+  width: 40px; height: 40px;
+  background: radial-gradient(circle, #fff, #ff6600, #990000);
+  border-radius: 50%;
+  box-shadow: 0 0 25px #ff3300;
+}
+
+.dojo-demon {
+  position: absolute;
+  font-size: 45px;
+  z-index: 16;
+  filter: drop-shadow(0 0 10px #ff3300);
+  cursor: crosshair;
+}
+
+#slash {
+  position: absolute;
+  pointer-events: none;
+  height: 5px;
+  background: var(--trail-color);
+  box-shadow: 0 0 12px var(--trail-color);
+  transform-origin: left center;
+  opacity: 0;
+  z-index: 50;
+  will-change: opacity, transform;
+}
+</style>
 </head>
 <body>
 <div id="fullscreen-overlay">
- <h1>FULLSCREEN REQUIRED</h1>
- <p>To experience Dojo Slicer properly, please enable fullscreen mode.
- Mobile devices will be automatically optimized to horizontal landscape alignment to perfectly fit the aspect ratio.</p>
- <button class="aura-btn" onclick="enterFullscreenAndStart()">Enable Fullscreen</button>
+  <h1>FULLSCREEN REQUIRED</h1>
+  <p>To experience Dojo Slicer properly, please enable fullscreen mode.
+  Mobile devices will be automatically optimized to horizontal landscape alignment to perfectly fit the aspect ratio.</p>
+  <button class="aura-btn" onclick="enterFullscreenAndStart()">Enable Fullscreen</button>
 </div>
 <div id="game-container">
- <div id="vignette"></div>
- <div id="ominous-bg">
- <div id="bg-features-layer"></div>
- <div id="dojo-floor" class="dojo-floor"></div>
- <div id="dojo-left-banner" class="dojo-banner" style="left: 40px;"></div>
- <div id="dojo-right-banner" class="dojo-banner" style="right: 40px;"></div>
- </div>
- <div id="lore-container"></div>
- <div id="main-menu-container">
- <button id="center-sword-btn" class="aura-btn" onclick="startGame()">Pick up your sword</button>
- <div id="branding-container">
- <div class="credits-text">Made by Jayron</div>
- </div>
- </div>
- <div id="prologue-screen" class="hidden">
- <div id="prologue-text"></div>
- <button class="nav-btn skip-btn-corner" onclick="skipPrologue()">Skip Cinematic ✕</button>
- </div>
- <div id="hud">
- <div>Coins: <span id="coin-txt">0</span></div>
- <div id="player-hp-ui" style="display:none; margin-top:10px;">
- Spirit
- <div class="health-bar">
- <div id="player-health-fill" class="health-fill"></div>
- <div id="player-health-text" class="health-val">100 / 100</div>
- </div>
- </div>
- </div>
- <div id="combo-ui">
- <span id="combo-count">0</span> COMBO
- <span id="combo-mult">Multiplier: 1.0x</span>
- </div>
- <div id="boss-hints">
- <div class="hint-card">⚔️ Cut projectiles before they reach the bottom of the screen.</div>
- <div class="hint-card">👹 Cut the demon directly to inflict damage.</div>
- </div>
- <div id="ambient-toggle-container">
- <label for="dojo-music-dropdown" style="font-size:13px; display:block; margin-bottom:4px; letter-spacing:1px; color:#aaa;">SELECT AUDIO CADENCE</label>
- <select id="dojo-music-dropdown" onchange="handleDropdownAudioSwap()"></select>
- </div>
- <div id="boss-hud">
- <div id="boss-name">Demon General</div>
- <div class="health-bar">
- <div id="boss-health-fill" class="health-fill" style="background:#cc00ff; width: 100%;"></div>
- <div id="boss-health-text" class="health-val">500 / 500</div>
- </div>
- </div>
- <div id="mode-nav">
- <button id="nav-map-btn" class="nav-btn" onclick="openMapMenu()">🗺️ Map</button>
- </div>
- <button id="test-arena-btn" class="nav-btn" onclick="enterTestArena()">Test</button>
- <div id="menu-map" class="screen hidden">
- <div class="shop-container" style="width: 400px; text-align: center;">
- <h2 style="color:#ffcc00; font-size: 30px; margin-top: 0;">🗺️ World Map</h2>
- <div style="display: flex; flex-direction: column; gap: 15px; margin-bottom: 25px;">
- <button id="nav-train-btn" class="nav-btn" onclick="changeState('DOJO')">Train in Dojo</button>
- <button id="nav-shop-btn" class="nav-btn" onclick="changeState('SHOP')">Blacksmith's Outpost</button>
- <button id="nav-vault-btn" class="nav-btn" onclick="changeState('VAULT')">Equipment Vault</button>
- <button id="nav-story-btn" class="nav-btn" onclick="playStoryPrologue()">Story Mode</button>
- </div>
- <hr style="border-color: #333; margin-bottom: 25px; width: 80%;">
- <button class="review-btn" onclick="openReviewPage(event)" style="margin: 0 auto; display: block; font-size: 16px; padding: 10px 20px;">Leave a Review</button>
- <button class="nav-btn" onclick="closeMapMenu()" style="margin-top: 25px;">Close Map</button>
- </div>
- </div>
- <div id="menu-shop" class="screen hidden">
- <div class="shop-container">
- <h2 style="color:#ffcc00; font-size: 30px; margin-top: 0;">Blacksmith's Sanctuary</h2>
- <p style="font-size:18px;">Vault Holdings: <span id="shop-coins" style="color:#ffcc00; font-weight:bold;">0</span> Coins</p>
- <div class="shop-tabs">
- <button id="tab-upgrades" class="tab-btn active" onclick="switchShopTab('upgrades')">Upgrades</button>
- <button id="tab-cosmetics" class="tab-btn" onclick="switchShopTab('cosmetics')">Blade Cosmetics</button>
- <button id="tab-music" class="tab-btn" onclick="switchShopTab('music')">Music Tracks</button>
- <button id="tab-stages" class="tab-btn" onclick="switchShopTab('stages')">Dojo Realms</button>
- </div>
- <div id="content-upgrades" class="shop-tab-content shop-grid">
- <div class="shop-item">
- <div><strong>Sharpen Edge (+Dmg)</strong><br><small style="color:#aaa;">Cost: <span id="cost-dmg">1500</span></small></div>
- <button class="nav-btn" style="padding:6px 12px;" onclick="buyUpgrade('dmg')">Buy</button>
- </div>
- <div class="shop-item">
- <div><strong>Hardened Will (+HP)</strong><br><small style="color:#aaa;">Cost: <span id="cost-hp">2000</span></small></div>
- <button class="nav-btn" style="padding:6px 12px;" onclick="buyUpgrade('hp')">Buy</button>
- </div>
- <div class="shop-item">
- <div><strong>Greed Index (+Coin Gain)</strong><br><small style="color:#aaa;">Cost: <span id="cost-mult">4000</span></small></div>
- <button class="nav-btn" style="padding:6px 12px;" onclick="buyUpgrade('mult')">Buy</button>
- </div>
- </div>
- <div id="content-cosmetics" class="shop-tab-content shop-grid hidden"></div>
- <div id="content-music" class="shop-tab-content shop-grid hidden"></div>
- <div id="content-stages" class="shop-tab-content shop-grid hidden"></div>
- </div>
- <button class="nav-btn" onclick="closeSubMenus()" style="margin-top:20px;">Return to Training</button>
- </div>
- <div id="menu-vault" class="screen hidden">
- 
- <div class="vault-container">
- <h2 style="color:#33ff99; font-size: 30px; margin-top: 0;">Equipment Vault & Settings</h2>
- <div style="background: #1a1a1a; padding:15px; border-radius:6px; margin-bottom:20px; border:1px solid #2d2d2d; display:flex; justify-content:space-between; align-items:center;">
- <div>
- <strong>VFX Blood Splatter</strong><br>
- <small style="color:#aaa;">Enables impact particle generation during high-intensity combat actions.</small>
- </div>
- <button id="toggle-blood-btn" class="nav-btn" style="padding:8px 16px; border-color:#cc0000; color:#ff4444;" onclick="toggleBloodFX()">Splatter: ON</button>
- </div>
- <div class="vault-tabs">
- <button id="tab-v-cosmetics" class="tab-btn active" onclick="switchVaultTab('cosmetics')">Cosmetics</button>
- <button id="tab-v-music" class="tab-btn" onclick="switchVaultTab('music')">Audio Library</button>
- <button id="tab-v-stages" class="tab-btn" onclick="switchVaultTab('stages')">Unlocked Realms</button>
- </div>
- <div id="vault-cosmetics" class="vault-tab-content vault-grid"></div>
- <div id="vault-music" class="vault-tab-content vault-grid hidden"></div>
- <div id="vault-stages" class="vault-tab-content vault-grid hidden"></div>
- </div>
- <button class="nav-btn" onclick="closeSubMenus()" style="margin-top:20px;">Return to Training</button>
- </div>
- <div id="menu-gameover" class="screen hidden">
- <h1 id="go-title" style="font-size: 48px; letter-spacing: 5px; color:#ff3333;">FALLEN</h1>
- <p id="go-desc" style="font-size: 22px; color:#ddd; font-weight: bold; text-align:center; max-width:500px; line-height:1.5;">Reforge your attributes within the sanctuary forge panels</p>
- <button id="go-action-btn" class="nav-btn" onclick="closeGameOver()" style="margin-top:25px; border-color:#ff3333; color:#ffcccc;">Return to the dojo</button>
- </div>
- <div id="slash"></div>
+  <div id="vignette"></div>
+  <div id="ominous-bg">
+    <div id="bg-features-layer"></div>
+    <div id="dojo-floor" class="dojo-floor"></div>
+    <div id="dojo-left-banner" class="dojo-banner" style="left: 40px;"></div>
+    <div id="dojo-right-banner" class="dojo-banner" style="right: 40px;"></div>
+  </div>
+  <div id="lore-container"></div>
+  <div id="main-menu-container">
+    <button id="center-sword-btn" class="aura-btn" onclick="startGame()">Pick up your sword</button>
+    <div id="branding-container">
+      <div class="credits-text">Made by Jayron</div>
+    </div>
+  </div>
+  <div id="prologue-screen" class="hidden">
+    <div id="prologue-text"></div>
+    <button class="nav-btn skip-btn-corner" onclick="skipPrologue()">Skip Cinematic ✕</button>
+  </div>
+  <div id="hud">
+    <div>Coins: <span id="coin-txt">0</span></div>
+    <div id="player-hp-ui" style="display:none; margin-top:10px;">
+      Spirit
+      <div class="health-bar">
+        <div id="player-health-fill" class="health-fill"></div>
+        <div id="player-health-text" class="health-val">100 / 100</div>
+      </div>
+    </div>
+  </div>
+  <div id="combo-ui">
+    <span id="combo-count">0</span> COMBO
+    <span id="combo-mult">Multiplier: 1.0x</span>
+  </div>
+  <div id="boss-hints">
+    <div class="hint-card">⚔️ Cut projectiles before they reach the bottom of the screen.</div>
+    <div class="hint-card">👹 Cut the demon directly to inflict damage.</div>
+  </div>
+  <div id="ambient-toggle-container">
+    <label for="dojo-music-dropdown" style="font-size:13px; display:block; margin-bottom:4px; letter-spacing:1px; color:#aaa;">SELECT AUDIO CADENCE</label>
+    <select id="dojo-music-dropdown" onchange="handleDropdownAudioSwap()"></select>
+  </div>
+  <div id="boss-hud">
+    <div id="boss-name">Demon General</div>
+    <div class="health-bar">
+      <div id="boss-health-fill" class="health-fill" style="background:#cc00ff; width: 100%;"></div>
+      <div id="boss-health-text" class="health-val">500 / 500</div>
+    </div>
+  </div>
+  <div id="mode-nav">
+    <button id="nav-map-btn" class="nav-btn" onclick="openMapMenu()">🗺️ Map</button>
+  </div>
+  <button id="test-arena-btn" class="nav-btn" onclick="enterTestArena()">Test</button>
+  <div id="menu-map" class="screen hidden">
+    <div class="shop-container" style="width: 400px; text-align: center;">
+      <h2 style="color:#ffcc00; font-size: 30px; margin-top: 0;">🗺️ World Map</h2>
+      <div style="display: flex; flex-direction: column; gap: 15px; margin-bottom: 25px;">
+        <button id="nav-train-btn" class="nav-btn" onclick="changeState('DOJO')">Train in Dojo</button>
+        <button id="nav-shop-btn" class="nav-btn" onclick="changeState('SHOP')">Blacksmith's Outpost</button>
+        <button id="nav-vault-btn" class="nav-btn" onclick="changeState('VAULT')">Equipment Vault</button>
+        <button id="nav-story-btn" class="nav-btn" onclick="playStoryPrologue()">Story Mode</button>
+      </div>
+      <hr style="border-color: #333; margin-bottom: 25px; width: 80%;">
+      <button class="review-btn" onclick="openReviewPage(event)" style="margin: 0 auto; display: block; font-size: 16px; padding: 10px 20px;">Leave a Review</button>
+      <button class="nav-btn" onclick="closeMapMenu()" style="margin-top: 25px;">Close Map</button>
+    </div>
+  </div>
+  <div id="menu-shop" class="screen hidden">
+    <div class="shop-container">
+      <h2 style="color:#ffcc00; font-size: 30px; margin-top: 0;">Blacksmith's Sanctuary</h2>
+      <p style="font-size:18px;">Vault Holdings: <span id="shop-coins" style="color:#ffcc00; font-weight:bold;">0</span> Coins</p>
+      <div class="shop-tabs">
+        <button id="tab-upgrades" class="tab-btn active" onclick="switchShopTab('upgrades')">Upgrades</button>
+        <button id="tab-cosmetics" class="tab-btn" onclick="switchShopTab('cosmetics')">Blade Cosmetics</button>
+        <button id="tab-music" class="tab-btn" onclick="switchShopTab('music')">Music Tracks</button>
+        <button id="tab-stages" class="tab-btn" onclick="switchShopTab('stages')">Dojo Realms</button>
+      </div>
+      <div id="content-upgrades" class="shop-tab-content shop-grid">
+        <div class="shop-item">
+          <div><strong>Sharpen Edge (+Dmg)</strong><br><small style="color:#aaa;">Cost: <span id="cost-dmg">1500</span></small></div>
+          <button class="nav-btn" style="padding:6px 12px;" onclick="buyUpgrade('dmg')">Buy</button>
+        </div>
+        <div class="shop-item">
+          <div><strong>Hardened Will (+HP)</strong><br><small style="color:#aaa;">Cost: <span id="cost-hp">2000</span></small></div>
+          <button class="nav-btn" style="padding:6px 12px;" onclick="buyUpgrade('hp')">Buy</button>
+        </div>
+        <div class="shop-item">
+          <div><strong>Greed Index (+Coin Gain)</strong><br><small style="color:#aaa;">Cost: <span id="cost-mult">4000</span></small></div>
+          <button class="nav-btn" style="padding:6px 12px;" onclick="buyUpgrade('mult')">Buy</button>
+        </div>
+      </div>
+      <div id="content-cosmetics" class="shop-tab-content shop-grid hidden"></div>
+      <div id="content-music" class="shop-tab-content shop-grid hidden"></div>
+      <div id="content-stages" class="shop-tab-content shop-grid hidden"></div>
+    </div>
+    <button class="nav-btn" onclick="closeSubMenus()" style="margin-top:20px;">Return to Training</button>
+  </div>
+  <div id="menu-vault" class="screen hidden">
+    <div class="vault-container">
+      <h2 style="color:#33ff99; font-size: 30px; margin-top: 0;">Equipment Vault & Settings</h2>
+      <div class="vault-tabs">
+        <button id="tab-v-cosmetics" class="tab-btn active" onclick="switchVaultTab('cosmetics')">Cosmetics</button>
+        <button id="tab-v-music" class="tab-btn" onclick="switchVaultTab('music')">Audio Library</button>
+        <button id="tab-v-stages" class="tab-btn" onclick="switchVaultTab('stages')">Unlocked Realms</button>
+      </div>
+      <div id="vault-cosmetics" class="vault-tab-content vault-grid"></div>
+      <div id="vault-music" class="vault-tab-content vault-grid hidden"></div>
+      <div id="vault-stages" class="vault-tab-content vault-grid hidden"></div>
+    </div>
+    <button class="nav-btn" onclick="closeSubMenus()" style="margin-top:20px;">Return to Training</button>
+  </div>
+  <div id="menu-gameover" class="screen hidden">
+    <h1 id="go-title" style="font-size: 48px; letter-spacing: 5px; color:#ff3333;">FALLEN</h1>
+    <p id="go-desc" style="font-size: 22px; color:#ddd; font-weight: bold; text-align:center; max-width:500px; line-height:1.5;">Reforge your attributes within the sanctuary forge panels</p>
+    <button id="go-action-btn" class="nav-btn" onclick="closeGameOver()" style="margin-top:25px; border-color:#ff3333; color:#ffcccc;">Return to the dojo</button>
+  </div>
+  <div id="slash"></div>
 </div>
 <script>
- let isPaused = true;
- let isHitStopActive = false;
- let state = "MENU";
- let coins = 0;
- let playerDmg = 1;
- let maxHp = 100, currentHp = 100;
- let costDmg = 1500, costHp = 2000, costMult = 4000;
- let coinMultiplier = 1;
- let bloodEffectsEnabled = true;
- let currentCombo = 0;
- let comboResetTimeout = null;
- const COMBO_WINDOW = 1500;
- let objects = [];
- let isSwiping = false, lastX = 0, lastY = 0;
- let gameInterval = null;
- let spawnInterval = null;
- let bossInterval = null;
- let musicInterval = null;
- let demonSpawnInterval = null;
- let loreInterval = null;
- let prologueTimeout = null;
- let bossEntities = [];
- let bossMaxHp = 500;
- let bossCurrentHp = 500;
- let isBossSplit = false;
- let unlockedCosmetics = ['default'];
- let currentCosmetic = 'default';
- let unlockedTracks = ['default'];
- let currentTrack = 'default';
- let unlockedBackgrounds = ['default'];
- let currentBackground = 'default';
- // MP3 Audio element for Original Training Arc track
- let defaultTrackAudio = new Audio('9jackjack8-japanese-trap-beat-272645.mp3');
- defaultTrackAudio.loop = true;
- defaultTrackAudio.volume = 0.5;
+// ============================================================
+// DOJO SLICER: VENGEANCE
+// ============================================================
 
- const cosmeticCatalog = {
- default: { name: "Default Steel", trail: "#ffffff", cost: 0, desc: "Active baseline aura configuration." },
- crimson: { name: "Crimson Fury", trail: "#ff3333", cost: 7500, desc: "Unleashes raw hate. Buff: +1 Base Damage" },
- purple: { name: "Void Purple", trail: "#cc33ff", cost: 12000, desc: "Anomalous deep space matter. Buff: +10 Max Health" },
- emerald: { name: "Jade Emerald", trail: "#33ff99", cost: 16000, desc: "Alchemical wealth matrix. Buff: +2 Coins per Slice" },
- lightning: { name: "Lightning Flash", trail: "#00ccff", cost: 22000, desc: "Ionic discharge trace. Buff: +2 Base Damage" },
- gold: { name: "Midas Spark", trail: "#ffcc00", cost: 30000, desc: "Transmuted hyper-dense assetry. Buff: Double Coin Yields" }
- };
+// --- Core State ---
+let isPaused = true;
+let isHitStopActive = false;
+let state = "MENU";
+let coins = 0;
+let playerDmg = 1;
+let maxHp = 100, currentHp = 100;
+let costDmg = 1500, costHp = 2000, costMult = 4000;
+let coinMultiplier = 1;
+let currentCombo = 0;
+let comboResetTimeout = null;
+const COMBO_WINDOW = 1500;
 
- const trackCatalog = {
- default: { name: "Original Training Arc", cost: 0, desc: "Standard rhythmic cadence." },
- nature: { name: "Nature Ambience", cost: 3000, desc: "Soft atmospheric ambient context tones." },
- shadow: { name: "Shadow Steps", cost: 5000, desc: "High tempo syncronous stealth sequence beats." },
- ronin: { name: "Ronin's Journey", cost: 9000, desc: "Heavy ominous structural acoustic cadence." },
- wrath: { name: "Demon's Wrath", cost: 15000, desc: "Chaotic discordant war-drums profile." },
- breeze: { name: "Blossom Breeze", cost: 20000, desc: "Serene restorative meditation melodies." }
- };
+// --- Object pools ---
+let objects = [];
+let isSwiping = false, lastX = 0, lastY = 0;
 
- const backgroundCatalog = {
- default: { name: "Destroyed Dojo", cost: 0, desc: "Demons have overrun the earth." },
- sakura: { name: "Sakura Garden", cost: 6000, desc: "Fallen fields. Buff: Spawns objects faster" },
- underworld: { name: "Underworld Pit", cost: 15000, desc: "Abyssal furnace. Buff: Hyper-frequent demon raids!" },
- peaks: { name: "Frozen Peaks", cost: 22000, desc: "Glacial spires. Buff: Double base scores value" },
- shrine: { name: "Thunder Shrine", cost: 31000, desc: "High altitude static storm storms." }
- };
+// --- Intervals/Timeouts ---
+let gameRAF = null;
+let spawnInterval = null;
+let bossInterval = null;
+let musicInterval = null;
+let demonSpawnInterval = null;
+let loreInterval = null;
+let prologueTimeout = null;
 
- function enterFullscreenAndStart() {
- if (audioCtx) playClickSound();
- let elem = document.documentElement;
- let req = elem.requestFullscreen || elem.webkitRequestFullscreen || elem.msRequestFullscreen;
- if (req) {
- req.call(elem).then(() => { lockLandscape(); }).catch(err => console.warn("Fullscreen request error:", err));
- } else {
- document.getElementById('fullscreen-overlay').style.display = 'none';
- isPaused = false;
- }
- }
- function lockLandscape() {
- if (screen.orientation && screen.orientation.lock) {
- screen.orientation.lock("landscape").catch(err => console.warn("Orientation lock failed:", err));
- }
- }
- function checkFullscreen() {
- let isFull = document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
- if (!isFull) {
- document.getElementById('fullscreen-overlay').style.display = 'flex';
- isPaused = true;
- } else {
- document.getElementById('fullscreen-overlay').style.display = 'none';
- isPaused = false;
- lockLandscape();
- }
- }
- document.addEventListener('fullscreenchange', checkFullscreen);
- document.addEventListener('webkitfullscreenchange', checkFullscreen);
- document.addEventListener('msfullscreenchange', checkFullscreen);
+// --- Boss ---
+let bossEntities = [];
+let bossMaxHp = 500;
+let bossCurrentHp = 500;
+let isBossSplit = false;
 
- let audioCtx = null;
- let choirNodes = [];
- let ambientNoiseNode = null;
- function initAudio() {
- if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
- if (audioCtx.state === 'suspended') audioCtx.resume();
- }
- function playChoir() {
- initAudio(); stopMusic();
- let freqs = [65.41, 98.00, 130.81, 155.56];
- choirNodes = freqs.map(f => {
- let osc = audioCtx.createOscillator();
- let gain = audioCtx.createGain();
- osc.type = 'sawtooth';
- osc.frequency.setValueAtTime(f, audioCtx.currentTime);
- let filter = audioCtx.createBiquadFilter();
- filter.type = 'lowpass';
- filter.frequency.setValueAtTime(200, audioCtx.currentTime);
- gain.gain.setValueAtTime(0.07, audioCtx.currentTime);
- osc.connect(filter); filter.connect(gain); gain.connect(audioCtx.destination);
- osc.start(); return { osc, gain };
- });
- }
- function playDojoMusic() {
- initAudio(); stopMusic();
- // DEFAULT TRACK: Play the mp3 file
- if (currentTrack === 'default') {
- defaultTrackAudio.currentTime = 0;
- defaultTrackAudio.play().catch(err => console.warn("Audio play error:", err));
- return;
- }
- if (currentTrack === "nature") { playNatureAmbience(); return; }
- let melodyBase = [[146.83, 250], [164.81, 250], [174.61, 250], [196.00, 250], [220.00, 250]];
- if (currentTrack === 'shadow') { melodyBase = [[220.0, 150], [293.6, 150], [329.6, 150]]; }
- else if (currentTrack === 'ronin') { melodyBase = [[110.0, 400], [130.8, 400], [98.0, 800]]; }
- else if (currentTrack === 'wrath') { melodyBase = [[85.0, 200], [95.0, 200], [70.0, 400]]; }
- else if (currentTrack === 'breeze') { melodyBase = [[261.6, 500], [329.6, 500], [392.0, 500]]; }
- let step = 0;
- function playNextNote() {
- if (state !== "DOJO" && state !== "TEST_ARENA") return;
- if (isPaused) { musicInterval = setTimeout(playNextNote, melodyBase[step][1]); return; }
- let [freq, duration] = melodyBase[step];
- let osc = audioCtx.createOscillator();
- let gain = audioCtx.createGain();
- osc.type = (currentTrack === 'wrath') ? 'sawtooth' : 'sine';
- osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
- let filter = audioCtx.createBiquadFilter();
- filter.type = 'lowpass';
- filter.frequency.setValueAtTime(600, audioCtx.currentTime);
- gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
- gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + (duration / 1000) - 0.02);
- osc.connect(filter); filter.connect(gain); gain.connect(audioCtx.destination);
- osc.start(); osc.stop(audioCtx.currentTime + duration / 1000);
- step = (step + 1) % melodyBase.length;
- musicInterval = setTimeout(playNextNote, duration);
- }
- playNextNote();
- }
- function playNatureAmbience() {
- let bufferSize = audioCtx.sampleRate * 2;
- let buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
- let data = buffer.getChannelData(0);
- for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
- ambientNoiseNode = audioCtx.createBufferSource();
- ambientNoiseNode.buffer = buffer; ambientNoiseNode.loop = true;
- let filter = audioCtx.createBiquadFilter();
- filter.type = 'lowpass'; filter.frequency.setValueAtTime(350, audioCtx.currentTime);
- let gain = audioCtx.createGain();
- gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
- ambientNoiseNode.connect(filter); filter.connect(gain); gain.connect(audioCtx.destination);
- ambientNoiseNode.start();
- }
- function playAdventureMusic() {
- initAudio(); stopMusic();
- let cycle = 0;
- function bossLoop() {
- if(state !== "ADVENTURE" && state !== "TEST_ARENA") return;
- if (isPaused) { let speed = isBossSplit ? 180 : 250; musicInterval = setTimeout(bossLoop, speed); return; }
- let osc = audioCtx.createOscillator();
- let gain = audioCtx.createGain();
- osc.type = 'sine';
- osc.frequency.setValueAtTime(cycle % 2 === 0 ? 50 : 40, audioCtx.currentTime);
- gain.gain.setValueAtTime(0.5, audioCtx.currentTime);
- gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.25);
- osc.connect(gain); gain.connect(audioCtx.destination);
- osc.start();
- osc.stop(audioCtx.currentTime + 0.25);
- if(cycle % 4 === 0) {
- let horn = audioCtx.createOscillator();
- let hornGain = audioCtx.createGain();
- horn.type = 'sawtooth';
- horn.frequency.setValueAtTime(110, audioCtx.currentTime);
- let hornFilter = audioCtx.createBiquadFilter();
- hornFilter.type = 'bandpass'; hornFilter.frequency.setValueAtTime(300, audioCtx.currentTime);
- hornGain.gain.setValueAtTime(0.18, audioCtx.currentTime);
- hornGain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.5);
- horn.connect(hornFilter); hornFilter.connect(hornGain); hornGain.connect(audioCtx.destination);
- horn.start(); horn.stop(audioCtx.currentTime + 0.5);
- }
- cycle++;
- let speed = isBossSplit ? 180 : 250;
- musicInterval = setTimeout(bossLoop, speed);
- }
- bossLoop();
- }
- function stopMusic() {
- if(musicInterval) { clearTimeout(musicInterval); musicInterval = null; }
- if(choirNodes.length > 0) {
- choirNodes.forEach(n => { try{ n.osc.stop(); }catch(e){} });
- choirNodes = [];
- }
- if(ambientNoiseNode) { try { ambientNoiseNode.stop(); } catch(e){} ambientNoiseNode = null; }
- // Stop the mp3 if it's playing
- defaultTrackAudio.pause();
- defaultTrackAudio.currentTime = 0;
- }
- function playCleanSlicingSound() {
- if(!audioCtx) return;
- let bufferSize = audioCtx.sampleRate * 0.12;
- let buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
- let data = buffer.getChannelData(0);
- for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
- let noiseSource = audioCtx.createBufferSource();
- noiseSource.buffer = buffer;
- let filter = audioCtx.createBiquadFilter();
- filter.type = 'lowpass'; filter.frequency.setValueAtTime(900, audioCtx.currentTime);
- let gain = audioCtx.createGain();
- gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
- gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.11);
- noiseSource.connect(filter); filter.connect(gain); gain.connect(audioCtx.destination);
- noiseSource.start();
- }
- function playHitSound(type) {
- if(!audioCtx) return;
- let osc = audioCtx.createOscillator();
- let gain = audioCtx.createGain();
- osc.connect(gain); gain.connect(audioCtx.destination);
- if (type === "balloon") { osc.type = 'sine'; osc.frequency.setValueAtTime(350, audioCtx.currentTime); gain.gain.setValueAtTime(0.2, audioCtx.currentTime); }
- else { osc.type = 'triangle'; osc.frequency.setValueAtTime(130, audioCtx.currentTime); gain.gain.setValueAtTime(0.35, audioCtx.currentTime); }
- osc.start(); osc.stop(audioCtx.currentTime + 0.12);
- }
- function playClickSound() {
- if(!audioCtx) return;
- let osc = audioCtx.createOscillator();
- let gain = audioCtx.createGain();
- osc.type = 'sine'; osc.frequency.setValueAtTime(120, audioCtx.currentTime);
- gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
- osc.connect(gain); gain.connect(audioCtx.destination);
- osc.start(); osc.stop(audioCtx.currentTime + 0.05);
- }
- function playFireballSound() {
- if(!audioCtx) return;
- let osc = audioCtx.createOscillator();
- let gain = audioCtx.createGain();
- osc.type = 'triangle';
- osc.frequency.setValueAtTime(220, audioCtx.currentTime);
- osc.frequency.exponentialRampToValueAtTime(60, audioCtx.currentTime + 0.35);
- gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
- gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.35);
- osc.connect(gain);
- gain.connect(audioCtx.destination);
- osc.start(); osc.stop(audioCtx.currentTime + 0.35);
- }
- function playBossHitSound() {
- if(!audioCtx) return;
- let osc1 = audioCtx.createOscillator();
- let osc2 = audioCtx.createOscillator();
- let gain = audioCtx.createGain();
- osc1.type = 'sawtooth';
- osc1.frequency.setValueAtTime(95, audioCtx.currentTime);
- osc1.frequency.linearRampToValueAtTime(35, audioCtx.currentTime + 0.22);
- osc2.type = 'triangle';
- osc2.frequency.setValueAtTime(145, audioCtx.currentTime);
- gain.gain.setValueAtTime(0.45, audioCtx.currentTime);
- gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.22);
- osc1.connect(gain); osc2.connect(gain); gain.connect(audioCtx.destination);
- osc1.start(); osc2.start();
- osc1.stop(audioCtx.currentTime + 0.22); osc2.stop(audioCtx.currentTime + 0.22);
- }
- function playComboSound(streak) {
- if(!audioCtx) return;
- let osc = audioCtx.createOscillator();
- let gain = audioCtx.createGain();
- osc.type = 'sine';
- let pitch = 440 + (streak * 20);
- osc.frequency.setValueAtTime(Math.min(pitch, 1200), audioCtx.currentTime);
- gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
- gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
- osc.connect(gain); gain.connect(audioCtx.destination);
- osc.start();
- osc.stop(audioCtx.currentTime + 0.1);
- }
- function buildDojoAudioDropdown() {
- const dropdown = document.getElementById("dojo-music-dropdown");
- dropdown.innerHTML = "";
- unlockedTracks.forEach(trackKey => {
- let opt = document.createElement("option");
- opt.value = trackKey;
- opt.innerText = trackCatalog[trackKey].name;
- if(trackKey === currentTrack) opt.selected = true;
- dropdown.appendChild(opt);
- });
- }
- function handleDropdownAudioSwap() {
- const dropdown = document.getElementById("dojo-music-dropdown");
- currentTrack = dropdown.value;
- playClickSound();
- if(state === "DOJO") playDojoMusic();
- }
- function toggleBloodFX() {
- bloodEffectsEnabled = !bloodEffectsEnabled;
- playClickSound();
- document.getElementById("toggle-blood-btn").innerText = bloodEffectsEnabled ? "Splatter: ON" : "Splatter: OFF";
- document.getElementById("toggle-blood-btn").style.borderColor = bloodEffectsEnabled ? "#cc0000" : "#555";
- }
- function openReviewPage(event) {
- event.stopPropagation(); playClickSound();
- window.open("https://docs.google.com/forms/d/e/1FAIpQLSc99YBb3cafk53wWXCEdJBKDGaz7hS9LkaH-tq5WcCKiGkAfA/viewform?usp=header", '_blank');
- }
- function switchShopTab(tabId) {
- playClickSound();
- document.querySelectorAll('.shop-tab-content').forEach(c => c.classList.add('hidden'));
- document.querySelectorAll('.shop-tabs .tab-btn').forEach(b => b.classList.remove('active'));
- document.getElementById('content-' + tabId).classList.remove('hidden');
- document.getElementById('tab-' + tabId).classList.add('active');
- }
- function switchVaultTab(tabId) {
- playClickSound();
- document.querySelectorAll('.vault-tab-content').forEach(c => c.classList.add('hidden'));
- document.querySelectorAll('.vault-tabs .tab-btn').forEach(b => b.classList.remove('active'));
- document.getElementById('vault-' + tabId).classList.remove('hidden');
- document.getElementById('tab-v-' + tabId).classList.add('active');
- }
- function openMapMenu() { playClickSound(); document.getElementById("menu-map").classList.remove("hidden"); }
- function closeMapMenu() { playClickSound(); document.getElementById("menu-map").classList.add("hidden"); }
+// --- Unlocks ---
+let unlockedCosmetics = ['default'];
+let currentCosmetic = 'default';
+let unlockedTracks = ['default'];
+let currentTrack = 'default';
+let unlockedBackgrounds = ['default'];
+let currentBackground = 'default';
 
- const ambientLorePhrases = [
- "I need to find her...", "I'M NOT STRONG ENOUGH YET!", "Vengeance will be mine.",
- "The blade reflects a monster...", "This nightmare just won't end."
- ];
- function showLore() {
- if(state !== "MENU" || isPaused) return;
- const container = document.getElementById('lore-container');
- const button = document.getElementById('center-sword-btn');
- if (!button) return;
- const bRect = button.getBoundingClientRect();
- const text = document.createElement('div');
- text.className = 'lore-text';
- text.innerText = ambientLorePhrases[Math.floor(Math.random() * ambientLorePhrases.length)];
- text.style.opacity = 0; container.appendChild(text);
- let validPosition = false, spawnX = 0, spawnY = 0, attempts = 0;
- while(!validPosition && attempts < 50) {
- spawnX = Math.random() * (window.innerWidth - 250);
- spawnY = Math.random() * (window.innerHeight - 50);
- attempts++;
- if (spawnX + 250 < bRect.left - 60 || spawnX > bRect.right + 60 || spawnY + 40 < bRect.top - 60 || spawnY > bRect.bottom + 60) { validPosition = true; }
- }
- text.style.left = spawnX + "px"; text.style.top = spawnY + "px";
- setTimeout(() => text.style.opacity = 1, 100);
- setTimeout(() => { text.style.opacity = 0; setTimeout(() => text.remove(), 1600); }, 3500);
- }
- loreInterval = setInterval(showLore, 2000);
- function startGame() {
- playClickSound();
- document.getElementById("main-menu-container").classList.add("hidden");
- document.getElementById("hud").style.display = "block";
- document.getElementById("mode-nav").style.display = "flex";
- changeState('DOJO');
- }
- function enterTestArena() { playClickSound(); changeState('TEST_ARENA'); }
+// --- Audio ---
+let audioCtx = null;
+let choirNodes = [];
+let ambientNoiseNode = null;
+let rainNoiseNode = null;
+let rainGainNode = null;
 
- const detailedStorySentences = [
- "They took everything from me...",
- "The world was overrun by demons",
- "I told my wife and daughter that we should head for the mountains and that we would be safe there",
- "For 4 years we lived in peace. My sword had started collecting dust on the wall.",
- "Then they found us and we we're ambushed in our sleep",
- "If only I didn't stop training..."
- ];
- function playStoryPrologue() {
- playClickSound(); stopMusic();
- clearAllActiveIntervals();
- document.getElementById("mode-nav").style.display = "none";
- document.getElementById("test-arena-btn").style.display = "none";
- const screen = document.getElementById("prologue-screen");
- const label = document.getElementById("prologue-text");
- screen.classList.remove("hidden");
- let textCursor = 0;
- label.innerText = detailedStorySentences[textCursor];
- label.style.opacity = 1;
- function displayNextStoryLine() {
- prologueTimeout = setTimeout(() => {
- if (isPaused) { displayNextStoryLine(); return; }
- label.style.opacity = 0;
- prologueTimeout = setTimeout(() => {
- textCursor++;
- if (textCursor < detailedStorySentences.length) {
- label.innerText = detailedStorySentences[textCursor];
- label.style.opacity = 1;
- displayNextStoryLine();
- } else { screen.classList.add("hidden"); changeState('ADVENTURE'); }
- }, 1000);
- }, 3500);
- }
- displayNextStoryLine();
- }
- function skipPrologue() {
- playClickSound();
- if(prologueTimeout) { clearTimeout(prologueTimeout); prologueTimeout = null; }
- document.getElementById("prologue-screen").classList.add("hidden");
- changeState('ADVENTURE');
- }
- function clearAllActiveIntervals() {
- if(spawnInterval) { clearInterval(spawnInterval); spawnInterval = null; }
- if(bossInterval) { clearInterval(bossInterval); bossInterval = null; }
- if(gameInterval) { clearInterval(gameInterval); gameInterval = null; }
- if(demonSpawnInterval) { clearInterval(demonSpawnInterval); demonSpawnInterval = null; }
- objects.forEach(o => o.el.remove());
- objects = [];
- resetCombo();
- clearBosses();
- }
- function changeState(newState) {
- state = newState;
- clearAllActiveIntervals();
- document.getElementById("boss-hud").style.display = "none";
- document.getElementById("player-hp-ui").style.display = "none";
- document.getElementById("menu-shop").classList.add("hidden");
- document.getElementById("menu-vault").classList.add("hidden");
- document.getElementById("menu-map").classList.add("hidden");
- document.getElementById("prologue-screen").classList.add("hidden");
- document.getElementById("ambient-toggle-container").style.display = "none";
- document.getElementById("boss-hints").style.display = "none";
- document.getElementById("combo-ui").style.display = "none";
- document.getElementById("test-arena-btn").style.display = "none";
- toggleDojoVisuals(false);
- if(state === "DOJO") {
- document.getElementById("mode-nav").style.display = "flex";
- document.getElementById("ambient-toggle-container").style.display = "block";
- document.getElementById("test-arena-btn").style.display = "block";
- toggleDojoVisuals(true);
- buildDojoAudioDropdown();
- let spawnRate = (currentBackground === 'sakura') ? 450 : 850;
- spawnInterval = setInterval(spawnDojo, spawnRate);
- let demonRate = (currentBackground === 'underworld') ? 4500 : 12000;
- demonSpawnInterval = setInterval(spawnDojoDemon, demonRate);
- runEngine(); playDojoMusic();
- }
- else if(state === "SHOP") {
- document.getElementById("mode-nav").style.display = "flex";
- document.getElementById("menu-shop").classList.remove("hidden");
- renderShopElements();
- }
- else if(state === "VAULT") {
- document.getElementById("mode-nav").style.display = "flex";
- document.getElementById("menu-vault").classList.remove("hidden");
- renderVaultElements();
- }
- else if(state === "ADVENTURE") {
- document.getElementById("mode-nav").style.display = "none";
- document.getElementById("boss-hud").style.display = "block";
- document.getElementById("player-hp-ui").style.display = "block";
- document.getElementById("boss-hints").style.display = "flex";
- isBossSplit = false;
- bossCurrentHp = bossMaxHp;
- let hpBuff = (currentCosmetic === 'purple') ? 10 : 0;
- currentHp = maxHp + hpBuff;
- updateBars(); initBoss(); runEngine(); playAdventureMusic();
- }
- else if(state === "TEST_ARENA") {
- document.getElementById("mode-nav").style.display = "flex";
- document.getElementById("ominous-bg").style.background = "radial-gradient(circle, #0a001a 0%, #000000 80%)";
- document.getElementById("bg-features-layer").innerHTML = "<div class='sim-grid'></div>";
- spawnInterval = setInterval(() => {
- if(isPaused) return;
- let limit = window.innerWidth;
- let startX = Math.random() * (limit - 50);
- let vy = -(Math.random() * 10 + 15);
- let vx = ((window.innerWidth / 2) - startX) * 0.01 + (Math.random() * 4 - 2);
- createObj("target", "target", startX, window.innerHeight, vx, vy, 0.15, 250);
- }, 250);
- runEngine(); playAdventureMusic();
- }
- }
- function toggleDojoVisuals(show) {
- let bg = document.getElementById("ominous-bg");
- let featureContainer = document.getElementById("bg-features-layer");
- featureContainer.innerHTML = "";
- if(show) {
- let showProps = (currentBackground === 'default') ? "none" : "block";
- document.getElementById("dojo-floor").style.display = showProps;
- document.getElementById("dojo-left-banner").style.display = showProps;
- document.getElementById("dojo-right-banner").style.display = showProps;
+let defaultTrackAudio = new Audio('9jackjack8-japanese-trap-beat-272645.mp3');
+defaultTrackAudio.loop = true;
+defaultTrackAudio.volume = 0.5;
 
- if (currentBackground === 'sakura') {
- bg.style.background = "radial-gradient(circle, #2b1520 0%, #10050c 80%)";
- for(let i=0; i<15; i++) { let petal = document.createElement("div"); petal.className = "sakura-petal-node"; petal.style.left = Math.random() * 100 + "%";
- petal.style.top = Math.random() * 80 + "%"; petal.style.animationDelay = (Math.random() * 5) + "s"; featureContainer.appendChild(petal);
- }
- } else if (currentBackground === 'underworld') {
- bg.style.background = "radial-gradient(circle, #3a0000 0%, #0a0000 80%)";
- let pit = document.createElement("div");
- pit.className = "lava-wave"; featureContainer.appendChild(pit);
- } else if (currentBackground === 'peaks') {
- bg.style.background = "radial-gradient(circle, #102035 0%, #020810 80%)";
- for(let i=0; i<8; i++) { let spire = document.createElement("div"); spire.className = "ice-spike";
- spire.style.left = (i * 15) + 5 + "%"; spire.style.bottom = "34%"; featureContainer.appendChild(spire);
- }
- } else if (currentBackground === 'shrine') {
- bg.style.background = "radial-gradient(circle, #25103a 0%, #070210 80%)";
- let gate = document.createElement("div");
- gate.className = "shrine-gate"; featureContainer.appendChild(gate);
- } else {
- bg.style.background = "url('Dojo-main-background.png') center center no-repeat #050505";
- bg.style.backgroundSize = "contain";
- }
- } else { 
- bg.style.background = "radial-gradient(circle, #1a0505 0%, #000 80%)"; 
- document.getElementById("dojo-floor").style.display = "none";
- document.getElementById("dojo-left-banner").style.display = "none";
- document.getElementById("dojo-right-banner").style.display = "none";
- }
- }
- function closeSubMenus() { playClickSound(); changeState('DOJO'); }
- function closeGameOver() { playClickSound(); document.getElementById("menu-gameover").classList.add("hidden"); changeState('DOJO'); }
+// --- Cached DOM refs ---
+const gc = document.getElementById("game-container");
+const slashEl = document.getElementById("slash");
+const coinTxt = document.getElementById("coin-txt");
+const comboUi = document.getElementById("combo-ui");
+const comboCountEl = document.getElementById("combo-count");
+const comboMultEl = document.getElementById("combo-mult");
 
- function runEngine() {
- gameInterval = setInterval(() => {
- if (isPaused || isHitStopActive) return;
- let currentWidthLimit = window.innerWidth;
- let offsetLeftPadding = 0;
- for(let i = objects.length-1; i >=0; i--) {
- let o = objects[i];
- if (o.type === "dojo-demon") {
- o.x += o.vx; o.y += o.vy;
- if (o.x < offsetLeftPadding || o.x > (offsetLeftPadding + currentWidthLimit - 60)) o.vx *= -1;
- if (o.y < 0 || o.y > window.innerHeight - 150) o.vy *= -1;
- o.el.style.left = o.x + "px"; o.el.style.top = o.y + "px";
- continue;
- }
- o.vy += o.g; o.x += o.vx; o.y += o.vy;
- o.el.style.left = o.x + "px"; o.el.style.top = o.y + "px";
- if (o.type === "sliced-half") { o.rot += o.rotV; o.el.style.transform = `rotate(${o.rot}deg)`; }
- if(o.y > window.innerHeight + 100 || o.x < -200 || o.x > window.innerWidth + 200) {
- if(state === "ADVENTURE" && o.type === "fireball") { currentHp -= 10; updateBars(); checkDeath(); playHitSound("wood"); }
- o.el.remove(); objects.splice(i, 1);
- }
- }
- if (state === "ADVENTURE") {
- bossEntities.forEach(b => { b.el.style.left = `calc(${b.x}% + ${offsetLeftPadding}px)`;
- if(Math.random() < 0.02) b.x = Math.random() * 60 + 10; });
- }
- }, 16);
- }
- function triggerHitStop(durationMs) { isHitStopActive = true; setTimeout(() => { isHitStopActive = false; }, durationMs); }
- function spawnDamageText(x, y, textVal, isCrit) {
- let el = document.createElement("div");
- el.className = "floating-text"; el.innerText = textVal;
- el.style.left = x + "px"; el.style.top = y + "px";
- if (isCrit) { el.style.color = "#ff33ff";
- el.style.textShadow = "2px 2px 0px #000, 0 0 15px #ff00ff"; }
- document.getElementById("game-container").appendChild(el);
- setTimeout(() => { el.style.transform = "translateY(-80px) scale(1.3)"; el.style.opacity = "0"; }, 10);
- setTimeout(() => el.remove(), 700);
- }
- function spawnDojo() {
- if (isPaused) return;
- let limit = window.innerWidth;
- let startX = Math.random() * (limit - 150) + 50;
- let vy = -(Math.random() * 4 + 13);
- let vx = ((window.innerWidth / 2) - startX) * 0.008 + (Math.random() * 2 - 1);
- let roll = Math.random();
- if(roll < 0.45) { createObj("balloon", "balloon", startX, window.innerHeight, vx, vy, 0.23, 2); }
- else if(roll < 0.8) { createObj("target", "target", startX, window.innerHeight, vx, vy, 0.23, 5); }
- else { createObj("dummy", "dummy", startX, window.innerHeight, vx, vy, 0.23, 10); }
- }
- function spawnDojoDemon() {
- if (isPaused) return;
- let limit = window.innerWidth;
- let el = document.createElement("div");
- el.className = "object dojo-demon"; el.innerHTML = "👾";
- document.getElementById("game-container").appendChild(el);
- let x = Math.random() * (limit - 100);
- let y = Math.random() * (window.innerHeight - 300) + 50;
- let vx = (Math.random() > 0.5 ? 3 : -3) * (Math.random() * 2 + 1);
- let vy = (Math.random() > 0.5 ? 3 : -3) * (Math.random() * 2 + 1);
- objects.push({el, type: "dojo-demon", x, y, vx, vy, g: 0, scoreVal: 60});
- setTimeout(() => { let idx = objects.findIndex(o => o.el === el); if(idx !== -1) { el.remove(); objects.splice(idx, 1); } }, 7000);
- }
- function initBoss() { clearBosses(); createBossEntity(45); triggerBossFireballLoop(); }
- function createBossEntity(leftPct) {
- let el = document.createElement("div");
- el.className = "boss";
- el.innerHTML = "👹";
- document.getElementById("game-container").appendChild(el);
- el.style.top = "15%";
- bossEntities.push({ el, x: leftPct });
- }
- function triggerBossFireballLoop() {
- if(bossInterval) clearInterval(bossInterval);
- let dynamicSpeed = isBossSplit ? 500 : 1300;
- bossInterval = setInterval(() => {
- if (isPaused) return;
- bossEntities.forEach(b => { let rect = b.el.getBoundingClientRect(); createObj("fireball", "fireball", rect.left + 25, rect.top + 40, (Math.random() - 0.5) * 5, 4, 0.06, 0); playFireballSound(); });
- }, dynamicSpeed);
- }
- function clearBosses() { bossEntities.forEach(b => b.el.remove()); bossEntities = []; }
- function createObj(type, cls, x, y, vx, vy, g, scoreVal) {
- let el = document.createElement("div");
- el.className = "object " + cls;
- document.getElementById("game-container").appendChild(el); objects.push({el, type, x, y, vx, vy, g, scoreVal});
- }
- function spawnImpactBlood(coordX, coordY) {
- if (!bloodEffectsEnabled) return;
- let containerRect = document.getElementById("game-container").getBoundingClientRect();
- let targetLocalX = coordX - containerRect.left;
- let targetLocalY = coordY - containerRect.top;
- for (let i = 0; i < 8; i++) {
- let drop = document.createElement("div");
- drop.className = "blood-drop"; drop.style.left = targetLocalX + "px"; drop.style.top = targetLocalY + "px";
- document.getElementById("game-container").appendChild(drop);
- let pVx = (Math.random() - 0.5) * 8; let pVy = (Math.random() - 0.7) * 10;
- let currentDropX = targetLocalX;
- let currentDropY = targetLocalY; let particleTicks = 0;
- let pInterval = setInterval(() => {
- if (isPaused) return;
- pVy += 0.4; currentDropX += pVx; currentDropY += pVy;
- drop.style.left = currentDropX + "px"; drop.style.top = currentDropY + "px";
- particleTicks++;
- if (particleTicks > 30) { clearInterval(pInterval); drop.remove(); }
- }, 20);
- }
- }
- function createSlicedHalves(o, dx, dy, dist) {
- let swipeAngle = Math.atan2(dy, dx);
- let swipeAngleDeg = swipeAngle * (180 / Math.PI);
- let swipeForce = Math.min(dist * 0.15, 12);
- let rect = o.el.getBoundingClientRect();
- for (let half = 0; half < 2; half++) {
- let halfEl = document.createElement("div");
- halfEl.className = o.el.className; halfEl.innerHTML = o.el.innerHTML;
- halfEl.style.pointerEvents = "none";
- let color1 = half === 0 ? "black" : "transparent";
- let color2 = half === 0 ? "transparent" : "black";
- halfEl.style.webkitMaskImage = `linear-gradient(${swipeAngleDeg}deg, ${color1} 49.5%, ${color2} 50.5%)`;
- halfEl.style.maskImage = `linear-gradient(${swipeAngleDeg}deg, ${color1} 49.5%, ${color2} 50.5%)`;
- halfEl.style.left = o.x + "px"; halfEl.style.top = o.y + "px"; halfEl.style.boxShadow = "none";
- document.getElementById("game-container").appendChild(halfEl);
- let perpAngle = swipeAngle + (half === 0 ? Math.PI/2 : -Math.PI/2);
- let splitForce = 4 + Math.random() * 3;
- let nVx = o.vx * 0.5 + Math.cos(swipeAngle) * swipeForce * 0.7 + Math.cos(perpAngle) * splitForce;
- let nVy = o.vy * 0.5 + Math.sin(swipeAngle) * swipeForce * 0.7 + Math.sin(perpAngle) * splitForce;
- objects.push({ el: halfEl, type: "sliced-half", x: o.x, y: o.y, vx: nVx, vy: nVy, g: 0.6, rot: 0, rotV: (Math.random() - 0.5) * 15 });
- }
- }
- function advanceCombo() {
- if (state !== "DOJO" && state !== "TEST_ARENA") return 1.0;
- currentCombo++;
- let multiplier = 1.0;
- if (currentCombo >= 25) multiplier = 3.5;
- else if (currentCombo >= 15) multiplier = 2.5;
- else if (currentCombo >= 8) multiplier = 1.8;
- else if (currentCombo >= 3) multiplier = 1.3;
- let comboUi = document.getElementById("combo-ui");
- comboUi.style.display = "block";
- document.getElementById("combo-count").innerText = currentCombo;
- document.getElementById("combo-mult").innerText = `Multiplier: ${multiplier.toFixed(1)}x`;
- comboUi.style.transform = "translateX(-50%) scale(1.25)";
- setTimeout(() => { comboUi.style.transform = "translateX(-50%) scale(1.0)"; }, 70);
- playComboSound(currentCombo);
- if (comboResetTimeout) clearTimeout(comboResetTimeout);
- comboResetTimeout = setTimeout(resetCombo, COMBO_WINDOW);
- return multiplier;
- }
- function resetCombo() {
- currentCombo = 0;
- document.getElementById("combo-ui").style.display = "none";
- if (comboResetTimeout) { clearTimeout(comboResetTimeout); comboResetTimeout = null; }
- }
- function handleMove(x, y) {
- if(isPaused) return;
- if(!isSwiping) return;
- let containerRect = document.getElementById("game-container").getBoundingClientRect();
- let localCurrentX = x - containerRect.left;
- let localCurrentY = y - containerRect.top;
- let slash = document.getElementById("slash");
- let dx = localCurrentX - lastX, dy = localCurrentY - lastY;
- let dist = Math.hypot(dx, dy);
- if(dist < 5) return;
- slash.style.left = lastX+"px"; slash.style.top = lastY+"px";
- slash.style.width = dist+"px"; slash.style.transform = `rotate(${Math.atan2(dy, dx)}rad)`;
- slash.style.opacity = 1;
- setTimeout(() => slash.style.opacity = 0, 50);
- let objectHitThisFrame = false;
- let maxHitMultiplier = 1.0;
- for(let i = objects.length - 1; i >= 0; i--) {
- let o = objects[i];
- if (o.type === "sliced-half") continue;
- let rect = o.el.getBoundingClientRect();
- let radiusCheck = (o.type === "dummy" || o.type === "dojo-demon") ? 55 : 45;
- if(Math.hypot(x - (rect.left + rect.width/2), y - (rect.top + rect.height/2)) < radiusCheck) {
- let baseCoins = (o.type === "fireball") ? 1 : o.scoreVal;
- let cosmeticBonus = (currentCosmetic === 'emerald') ? 2 : 0;
- let environmentalMultiplier = (currentBackground === 'underworld') ? 2 : (currentBackground === 'peaks' ? 2 : 1);
- let doubleMultiplier = (currentCosmetic === 'gold') ? 2 : 1;
- let activeComboMult = 1.0;
- if(state === "DOJO" || state === "TEST_ARENA") { activeComboMult = advanceCombo();
- if (activeComboMult > maxHitMultiplier) maxHitMultiplier = activeComboMult; }
- let coinGain = Math.floor(((((baseCoins * coinMultiplier) + cosmeticBonus) * environmentalMultiplier) * doubleMultiplier) * activeComboMult);
- coins += coinGain;
- objectHitThisFrame = true;
- let isCrit = activeComboMult >= 2.5;
- spawnDamageText(x, y, `+${coinGain}`, isCrit);
- if(o.type === "dojo-demon") { spawnImpactBlood(x, y); }
- playHitSound(o.type);
- createSlicedHalves(o, dx, dy, dist);
- o.el.remove(); objects.splice(i, 1);
- document.getElementById("coin-txt").innerText = coins;
- }
- }
- bossEntities.forEach(b => {
- let rect = b.el.getBoundingClientRect();
- if(Math.hypot(x - (rect.left+45), y - (rect.top+45)) < 75) {
- let cosmeticDmg = (currentCosmetic === 'crimson') ? 1 : (currentCosmetic === 'lightning' ? 2 : 0);
- let totalDmg = playerDmg + cosmeticDmg;
- bossCurrentHp -= totalDmg;
- objectHitThisFrame = true;
- spawnDamageText(x, y, `-${totalDmg} HP`, true);
- spawnImpactBlood(x, y);
- playBossHitSound(); updateBars();
- if(bossCurrentHp <= (bossMaxHp / 2) && !isBossSplit) { isBossSplit = true; createBossEntity(25); bossEntities[0].x = 65; triggerBossFireballLoop(); playAdventureMusic(); }
- if(bossCurrentHp <= 0) win();
- }
- });
- if (objectHitThisFrame) {
- playCleanSlicingSound();
- triggerHitStop(40);
- if (maxHitMultiplier >= 1.8 || state === "TEST_ARENA") { document.getElementById("game-container").classList.add("shake-intense"); setTimeout(() => document.getElementById("game-container").classList.remove("shake-intense"), 150);
- }
- }
- lastX = localCurrentX; lastY = localCurrentY;
- }
- function updateBars() {
- let hpBuff = (currentCosmetic === 'purple') ? 10 : 0;
- let clampedPlayerHp = Math.max(0, currentHp);
- let clampedBossHp = Math.max(0, bossCurrentHp);
- document.getElementById("player-health-fill").style.width = (clampedPlayerHp / (maxHp + hpBuff)) * 100 + "%";
- document.getElementById("player-health-text").innerText = clampedPlayerHp + " / " + (maxHp + hpBuff);
- document.getElementById("boss-health-fill").style.width = (clampedBossHp / bossMaxHp) * 100 + "%";
- document.getElementById("boss-health-text").innerText = clampedBossHp + " / " + bossMaxHp;
- }
- function buyUpgrade(t) {
- if(t === 'dmg' && coins >= costDmg) { coins -= costDmg;
- playerDmg++; costDmg = Math.floor(costDmg * 2.2); playHitSound("target"); }
- if(t === 'hp' && coins >= costHp) { coins -= costHp;
- maxHp += 20; costHp = Math.floor(costHp * 2.2); playHitSound("target"); }
- if(t === 'mult' && coins >= costMult) { coins -= costMult;
- coinMultiplier += 1; costMult = Math.floor(costMult * 2.5); playHitSound("target"); }
- document.getElementById("shop-coins").innerText = coins;
- document.getElementById("coin-txt").innerText = coins;
- document.getElementById("cost-dmg").innerText = costDmg;
- document.getElementById("cost-hp").innerText = costHp;
- document.getElementById("cost-mult").innerText = costMult;
- }
- function renderShopElements() {
- document.getElementById("shop-coins").innerText = coins;
- let cosBox = document.getElementById("content-cosmetics"); cosBox.innerHTML = "";
- Object.keys(cosmeticCatalog).forEach(k => { if(!unlockedCosmetics.includes(k)) { let item = cosmeticCatalog[k]; cosBox.innerHTML += `<div class="shop-item"><div><strong style="color:${item.trail};">${item.name}</strong><br><small style="color:#aaa;">Cost: ${item.cost} | ${item.desc}</small></div><button class="nav-btn" style="padding:6px 12px;" onclick="processStorePurchase('cosmetic', '${k}', ${item.cost})">Unlock</button></div>`; } });
- if(cosBox.innerHTML === "") cosBox.innerHTML = "<p style='padding:15px; color:#aaa;'>All micro-cosmetic catalog arrays cleared.</p>";
- let musBox = document.getElementById("content-music"); musBox.innerHTML = "";
- Object.keys(trackCatalog).forEach(k => { if(!unlockedTracks.includes(k)) { let item = trackCatalog[k]; musBox.innerHTML += `<div class="shop-item"><div><strong>${item.name}</strong><br><small style="color:#aaa;">Cost: ${item.cost} | ${item.desc}</small></div><button class="nav-btn" style="padding:6px 12px;" onclick="processStorePurchase('music', '${k}', ${item.cost})">Unlock</button></div>`; } });
- if(musBox.innerHTML === "") musBox.innerHTML = "<p style='padding:15px; color:#aaa;'>All musical frequencies unlocked.</p>";
- let stageBox = document.getElementById("content-stages"); stageBox.innerHTML = "";
- Object.keys(backgroundCatalog).forEach(k => { if(!unlockedBackgrounds.includes(k)) { let item = backgroundCatalog[k]; stageBox.innerHTML += `<div class="shop-item"><div><strong>${item.name}</strong><br><small style="color:#aaa;">Cost: ${item.cost} | ${item.desc}</small></div><button class="nav-btn" style="padding:6px 12px;" onclick="processStorePurchase('stage', '${k}', ${item.cost})">Unlock</button></div>`; } });
- if(stageBox.innerHTML === "") stageBox.innerHTML = "<p style='padding:15px; color:#aaa;'>All regional dojo matrices opened.</p>";
- }
- function processStorePurchase(category, key, cost) {
- if(coins >= cost) { coins -= cost; playHitSound("target"); if(category === 'cosmetic') unlockedCosmetics.push(key);
- if(category === 'music') unlockedTracks.push(key); if(category === 'stage') unlockedBackgrounds.push(key); renderShopElements(); document.getElementById("coin-txt").innerText = coins;
- }
- }
- function renderVaultElements() {
- let cosVault = document.getElementById("vault-cosmetics"); cosVault.innerHTML = "";
- unlockedCosmetics.forEach(k => { let item = cosmeticCatalog[k]; let activeText = (currentCosmetic === k) ? "Equipped" : "Equip"; let activeStyle = (currentCosmetic === k) ? "border-color:#33ff99; color:#33ff99;" : ""; cosVault.innerHTML += `<div class="vault-item"><div><strong style="color:${item.trail};">${item.name}</strong><br><small style="color:#aaa;">${item.desc}</small></div><button class="nav-btn" style="padding:6px 12px; ${activeStyle}" onclick="equipVaultAsset('cosmetic', '${k}')">${activeText}</button></div>`; });
- let musVault = document.getElementById("vault-music"); musVault.innerHTML = "";
- unlockedTracks.forEach(k => { let item = trackCatalog[k]; let activeText = (currentTrack === k) ? "Active" : "Select"; let activeStyle = (currentTrack === k) ? "border-color:#33ff99; color:#33ff99;" : ""; musVault.innerHTML += `<div class="vault-item"><div><strong>${item.name}</strong><br><small style="color:#aaa;">${item.desc}</small></div><button class="nav-btn" style="padding:6px 12px; ${activeStyle}" onclick="equipVaultAsset('music', '${k}')">${activeText}</button></div>`; });
- let stageVault = document.getElementById("vault-stages"); stageVault.innerHTML = "";
- unlockedBackgrounds.forEach(k => { let item = backgroundCatalog[k]; let activeText = (currentBackground === k) ? "Applied" : "Apply"; let activeStyle = (currentBackground === k) ? "border-color:#33ff99; color:#33ff99;" : ""; stageVault.innerHTML += `<div class="vault-item"><div><strong>${item.name}</strong><br><small style="color:#aaa;">${item.desc}</small></div><button class="nav-btn" style="padding:6px 12px; ${activeStyle}" onclick="equipVaultAsset('stage', '${k}')">${activeText}</button></div>`; });
- }
- function equipVaultAsset(category, key) {
- playClickSound();
- if(category === 'cosmetic') { currentCosmetic = key; document.documentElement.style.setProperty('--trail-color', cosmeticCatalog[key].trail); updateBars();
- }
- if(category === 'music') { currentTrack = key; }
- if(category === 'stage') { currentBackground = key; }
- renderVaultElements();
- }
- function checkDeath() { if(currentHp <= 0) { stopMusic(); clearBosses(); document.getElementById("menu-gameover").classList.remove("hidden"); state="DEAD"; } }
- function win() { stopMusic(); clearBosses();
- document.getElementById("go-title").innerText = "VICTORY"; document.getElementById("go-title").style.color = "#33ff99"; document.getElementById("go-desc").innerText = "The Demon General falls broken before your blade! Your long training cycle yields completion.";
- document.getElementById("menu-gameover").classList.remove("hidden"); state="WIN"; }
+// --- Catalogs ---
+const cosmeticCatalog = {
+  default: { name: "Default Steel", trail: "#ffffff", cost: 0, desc: "Active baseline aura configuration." },
+  crimson: { name: "Crimson Fury", trail: "#ff3333", cost: 7500, desc: "Unleashes raw hate. Buff: +1 Base Damage" },
+  purple: { name: "Void Purple", trail: "#cc33ff", cost: 12000, desc: "Anomalous deep space matter. Buff: +10 Max Health" },
+  emerald: { name: "Jade Emerald", trail: "#33ff99", cost: 16000, desc: "Alchemical wealth matrix. Buff: +2 Coins per Slice" },
+  lightning: { name: "Lightning Flash", trail: "#00ccff", cost: 22000, desc: "Ionic discharge trace. Buff: +2 Base Damage" },
+  gold: { name: "Midas Spark", trail: "#ffcc00", cost: 30000, desc: "Transmuted hyper-dense assetry. Buff: Double Coin Yields" }
+};
 
- window.addEventListener("mousedown", e => { if (isPaused) return; if (state === "MENU" && !audioCtx) playChoir(); isSwiping = true; let containerRect = document.getElementById("game-container").getBoundingClientRect(); lastX = e.clientX - containerRect.left; lastY = e.clientY - containerRect.top; });
- window.addEventListener("mousemove", e => handleMove(e.clientX, e.clientY));
- window.addEventListener("mouseup", () => isSwiping = false);
- window.addEventListener("touchstart", e => { if (isPaused) return; if (state === "MENU" && !audioCtx) playChoir(); isSwiping = true; let containerRect = document.getElementById("game-container").getBoundingClientRect(); lastX = e.touches[0].clientX - containerRect.left; lastY = e.touches[0].clientY - containerRect.top; });
- window.addEventListener("touchmove", e => handleMove(e.touches[0].clientX, e.touches[0].clientY));
- window.addEventListener("touchend", () => isSwiping = false);
- window.addEventListener("click", () => { if(state === "MENU" && choirNodes.length === 0 && !isPaused) playChoir(); });
- document.addEventListener("touchstart", e => { if (e.touches.length > 1) e.preventDefault(); }, { passive: false });
- document.addEventListener("touchmove", e => { e.preventDefault(); }, { passive: false });
- document.addEventListener("gesturestart", e => e.preventDefault());
- document.addEventListener("gesturechange", e => e.preventDefault());
- document.addEventListener("gestureend", e => e.preventDefault());
- let lastTouchEnd = 0;
- document.addEventListener('touchend', function (event) { const now = (new Date()).getTime(); if (now - lastTouchEnd <= 300) { event.preventDefault(); } lastTouchEnd = now; }, false);
- </script>
+const trackCatalog = {
+  default: { name: "Original Training Arc", cost: 0, desc: "Standard rhythmic cadence." },
+  nature: { name: "Nature Ambience", cost: 3000, desc: "Soft atmospheric ambient context tones." },
+  shadow: { name: "Shadow Steps", cost: 5000, desc: "High tempo syncronous stealth sequence beats." },
+  ronin: { name: "Ronin's Journey", cost: 9000, desc: "Heavy ominous structural acoustic cadence." },
+  wrath: { name: "Demon's Wrath", cost: 15000, desc: "Chaotic discordant war-drums profile." },
+  breeze: { name: "Blossom Breeze", cost: 20000, desc: "Serene restorative meditation melodies." }
+};
+
+const backgroundCatalog = {
+  default: { name: "Destroyed Dojo", cost: 0, desc: "Demons have overrun the earth." },
+  sakura: { name: "Sakura Garden", cost: 6000, desc: "Fallen fields. Buff: Spawns objects faster" },
+  underworld: { name: "Underworld Pit", cost: 15000, desc: "Abyssal furnace. Buff: Hyper-frequent demon raids!" },
+  peaks: { name: "Frozen Peaks", cost: 22000, desc: "Glacial spires. Buff: Double base scores value" },
+  shrine: { name: "Thunder Shrine", cost: 31000, desc: "High altitude static storm storms." }
+};
+
+// ============================================================
+// FULLSCREEN
+// ============================================================
+function enterFullscreenAndStart() {
+  if (audioCtx) playClickSound();
+  let elem = document.documentElement;
+  let req = elem.requestFullscreen || elem.webkitRequestFullscreen || elem.msRequestFullscreen;
+  if (req) {
+    req.call(elem).then(() => { lockLandscape(); }).catch(() => {});
+  } else {
+    document.getElementById('fullscreen-overlay').style.display = 'none';
+    isPaused = false;
+  }
+}
+
+function lockLandscape() {
+  if (screen.orientation && screen.orientation.lock) {
+    screen.orientation.lock("landscape").catch(() => {});
+  }
+}
+
+function checkFullscreen() {
+  let isFull = document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
+  if (!isFull) {
+    document.getElementById('fullscreen-overlay').style.display = 'flex';
+    isPaused = true;
+  } else {
+    document.getElementById('fullscreen-overlay').style.display = 'none';
+    isPaused = false;
+    lockLandscape();
+  }
+}
+
+document.addEventListener('fullscreenchange', checkFullscreen);
+document.addEventListener('webkitfullscreenchange', checkFullscreen);
+document.addEventListener('msfullscreenchange', checkFullscreen);
+
+// ============================================================
+// AUDIO ENGINE
+// ============================================================
+function initAudio() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+}
+
+// --- Rain Sound (plays during prologue) ---
+function playRainSound() {
+  initAudio();
+  stopRainSound();
+  let bufferSize = audioCtx.sampleRate * 2;
+  let buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+  let data = buffer.getChannelData(0);
+  for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+  rainNoiseNode = audioCtx.createBufferSource();
+  rainNoiseNode.buffer = buffer;
+  rainNoiseNode.loop = true;
+  // Shape noise into rain: highpass removes rumble, lowpass removes harshness
+  let hiPass = audioCtx.createBiquadFilter();
+  hiPass.type = 'highpass';
+  hiPass.frequency.setValueAtTime(800, audioCtx.currentTime);
+  let loPass = audioCtx.createBiquadFilter();
+  loPass.type = 'lowpass';
+  loPass.frequency.setValueAtTime(5000, audioCtx.currentTime);
+  rainGainNode = audioCtx.createGain();
+  rainGainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+  rainGainNode.gain.linearRampToValueAtTime(0.22, audioCtx.currentTime + 2);
+  rainNoiseNode.connect(hiPass);
+  hiPass.connect(loPass);
+  loPass.connect(rainGainNode);
+  rainGainNode.connect(audioCtx.destination);
+  rainNoiseNode.start();
+}
+
+function stopRainSound() {
+  if (rainNoiseNode) {
+    try {
+      if (rainGainNode) {
+        rainGainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.8);
+        let node = rainNoiseNode;
+        setTimeout(() => { try { node.stop(); } catch(e){} }, 900);
+      } else {
+        rainNoiseNode.stop();
+      }
+    } catch(e) {}
+    rainNoiseNode = null;
+    rainGainNode = null;
+  }
+}
+
+function playChoir() {
+  initAudio(); stopMusic();
+  let freqs = [65.41, 98.00, 130.81, 155.56];
+  choirNodes = freqs.map(f => {
+    let osc = audioCtx.createOscillator();
+    let gain = audioCtx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(f, audioCtx.currentTime);
+    let filter = audioCtx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(200, audioCtx.currentTime);
+    gain.gain.setValueAtTime(0.07, audioCtx.currentTime);
+    osc.connect(filter); filter.connect(gain); gain.connect(audioCtx.destination);
+    osc.start(); return { osc, gain };
+  });
+}
+
+function playDojoMusic() {
+  initAudio(); stopMusic();
+  if (currentTrack === 'default') {
+    defaultTrackAudio.currentTime = 0;
+    defaultTrackAudio.play().catch(() => {});
+    return;
+  }
+  if (currentTrack === "nature") { playNatureAmbience(); return; }
+  let melodyBase = [[146.83, 250], [164.81, 250], [174.61, 250], [196.00, 250], [220.00, 250]];
+  if (currentTrack === 'shadow') melodyBase = [[220.0, 150], [293.6, 150], [329.6, 150]];
+  else if (currentTrack === 'ronin') melodyBase = [[110.0, 400], [130.8, 400], [98.0, 800]];
+  else if (currentTrack === 'wrath') melodyBase = [[85.0, 200], [95.0, 200], [70.0, 400]];
+  else if (currentTrack === 'breeze') melodyBase = [[261.6, 500], [329.6, 500], [392.0, 500]];
+  let step = 0;
+  function playNextNote() {
+    if (state !== "DOJO" && state !== "TEST_ARENA") return;
+    if (isPaused) { musicInterval = setTimeout(playNextNote, melodyBase[step][1]); return; }
+    let [freq, duration] = melodyBase[step];
+    let osc = audioCtx.createOscillator();
+    let gain = audioCtx.createGain();
+    osc.type = (currentTrack === 'wrath') ? 'sawtooth' : 'sine';
+    osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+    let filter = audioCtx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(600, audioCtx.currentTime);
+    gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + (duration / 1000) - 0.02);
+    osc.connect(filter); filter.connect(gain); gain.connect(audioCtx.destination);
+    osc.start(); osc.stop(audioCtx.currentTime + duration / 1000);
+    step = (step + 1) % melodyBase.length;
+    musicInterval = setTimeout(playNextNote, duration);
+  }
+  playNextNote();
+}
+
+function playNatureAmbience() {
+  let bufferSize = audioCtx.sampleRate * 2;
+  let buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+  let data = buffer.getChannelData(0);
+  for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+  ambientNoiseNode = audioCtx.createBufferSource();
+  ambientNoiseNode.buffer = buffer; ambientNoiseNode.loop = true;
+  let filter = audioCtx.createBiquadFilter();
+  filter.type = 'lowpass'; filter.frequency.setValueAtTime(350, audioCtx.currentTime);
+  let gain = audioCtx.createGain();
+  gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+  ambientNoiseNode.connect(filter); filter.connect(gain); gain.connect(audioCtx.destination);
+  ambientNoiseNode.start();
+}
+
+function playAdventureMusic() {
+  initAudio(); stopMusic();
+  let cycle = 0;
+  function bossLoop() {
+    if (state !== "ADVENTURE" && state !== "TEST_ARENA") return;
+    if (isPaused) { musicInterval = setTimeout(bossLoop, isBossSplit ? 180 : 250); return; }
+    let osc = audioCtx.createOscillator();
+    let gain = audioCtx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(cycle % 2 === 0 ? 50 : 40, audioCtx.currentTime);
+    gain.gain.setValueAtTime(0.5, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.25);
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.start(); osc.stop(audioCtx.currentTime + 0.25);
+    if (cycle % 4 === 0) {
+      let horn = audioCtx.createOscillator();
+      let hornGain = audioCtx.createGain();
+      horn.type = 'sawtooth';
+      horn.frequency.setValueAtTime(110, audioCtx.currentTime);
+      let hornFilter = audioCtx.createBiquadFilter();
+      hornFilter.type = 'bandpass'; hornFilter.frequency.setValueAtTime(300, audioCtx.currentTime);
+      hornGain.gain.setValueAtTime(0.18, audioCtx.currentTime);
+      hornGain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.5);
+      horn.connect(hornFilter); hornFilter.connect(hornGain); hornGain.connect(audioCtx.destination);
+      horn.start(); horn.stop(audioCtx.currentTime + 0.5);
+    }
+    cycle++;
+    musicInterval = setTimeout(bossLoop, isBossSplit ? 180 : 250);
+  }
+  bossLoop();
+}
+
+function stopMusic() {
+  if (musicInterval) { clearTimeout(musicInterval); musicInterval = null; }
+  if (choirNodes.length > 0) {
+    choirNodes.forEach(n => { try { n.osc.stop(); } catch(e){} });
+    choirNodes = [];
+  }
+  if (ambientNoiseNode) { try { ambientNoiseNode.stop(); } catch(e){} ambientNoiseNode = null; }
+  defaultTrackAudio.pause();
+  defaultTrackAudio.currentTime = 0;
+}
+
+// --- SFX ---
+function playCleanSlicingSound() {
+  if (!audioCtx) return;
+  let bufferSize = audioCtx.sampleRate * 0.12;
+  let buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+  let data = buffer.getChannelData(0);
+  for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+  let src = audioCtx.createBufferSource();
+  src.buffer = buffer;
+  let filter = audioCtx.createBiquadFilter();
+  filter.type = 'lowpass'; filter.frequency.setValueAtTime(900, audioCtx.currentTime);
+  let gain = audioCtx.createGain();
+  gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.11);
+  src.connect(filter); filter.connect(gain); gain.connect(audioCtx.destination);
+  src.start();
+}
+
+function playHitSound(type) {
+  if (!audioCtx) return;
+  let osc = audioCtx.createOscillator();
+  let gain = audioCtx.createGain();
+  osc.connect(gain); gain.connect(audioCtx.destination);
+  if (type === "balloon") { osc.type = 'sine'; osc.frequency.setValueAtTime(350, audioCtx.currentTime); gain.gain.setValueAtTime(0.2, audioCtx.currentTime); }
+  else { osc.type = 'triangle'; osc.frequency.setValueAtTime(130, audioCtx.currentTime); gain.gain.setValueAtTime(0.35, audioCtx.currentTime); }
+  osc.start(); osc.stop(audioCtx.currentTime + 0.12);
+}
+
+function playClickSound() {
+  if (!audioCtx) return;
+  let osc = audioCtx.createOscillator();
+  let gain = audioCtx.createGain();
+  osc.type = 'sine'; osc.frequency.setValueAtTime(120, audioCtx.currentTime);
+  gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+  osc.connect(gain); gain.connect(audioCtx.destination);
+  osc.start(); osc.stop(audioCtx.currentTime + 0.05);
+}
+
+function playFireballSound() {
+  if (!audioCtx) return;
+  let osc = audioCtx.createOscillator();
+  let gain = audioCtx.createGain();
+  osc.type = 'triangle';
+  osc.frequency.setValueAtTime(220, audioCtx.currentTime);
+  osc.frequency.exponentialRampToValueAtTime(60, audioCtx.currentTime + 0.35);
+  gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
+  gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.35);
+  osc.connect(gain); gain.connect(audioCtx.destination);
+  osc.start(); osc.stop(audioCtx.currentTime + 0.35);
+}
+
+function playBossHitSound() {
+  if (!audioCtx) return;
+  let osc1 = audioCtx.createOscillator();
+  let osc2 = audioCtx.createOscillator();
+  let gain = audioCtx.createGain();
+  osc1.type = 'sawtooth';
+  osc1.frequency.setValueAtTime(95, audioCtx.currentTime);
+  osc1.frequency.linearRampToValueAtTime(35, audioCtx.currentTime + 0.22);
+  osc2.type = 'triangle';
+  osc2.frequency.setValueAtTime(145, audioCtx.currentTime);
+  gain.gain.setValueAtTime(0.45, audioCtx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.22);
+  osc1.connect(gain); osc2.connect(gain); gain.connect(audioCtx.destination);
+  osc1.start(); osc2.start();
+  osc1.stop(audioCtx.currentTime + 0.22); osc2.stop(audioCtx.currentTime + 0.22);
+}
+
+function playComboSound(streak) {
+  if (!audioCtx) return;
+  let osc = audioCtx.createOscillator();
+  let gain = audioCtx.createGain();
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(Math.min(440 + streak * 20, 1200), audioCtx.currentTime);
+  gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
+  osc.connect(gain); gain.connect(audioCtx.destination);
+  osc.start(); osc.stop(audioCtx.currentTime + 0.1);
+}
+
+// ============================================================
+// UI CONTROLS
+// ============================================================
+function buildDojoAudioDropdown() {
+  const dropdown = document.getElementById("dojo-music-dropdown");
+  dropdown.innerHTML = "";
+  unlockedTracks.forEach(trackKey => {
+    let opt = document.createElement("option");
+    opt.value = trackKey;
+    opt.innerText = trackCatalog[trackKey].name;
+    if (trackKey === currentTrack) opt.selected = true;
+    dropdown.appendChild(opt);
+  });
+}
+
+function handleDropdownAudioSwap() {
+  const dropdown = document.getElementById("dojo-music-dropdown");
+  currentTrack = dropdown.value;
+  playClickSound();
+  if (state === "DOJO") playDojoMusic();
+}
+
+function openReviewPage(event) {
+  event.stopPropagation(); playClickSound();
+  window.open("https://docs.google.com/forms/d/e/1FAIpQLSc99YBb3cafk53wWXCEdJBKDGaz7hS9LkaH-tq5WcCKiGkAfA/viewform?usp=header", '_blank');
+}
+
+function switchShopTab(tabId) {
+  playClickSound();
+  document.querySelectorAll('.shop-tab-content').forEach(c => c.classList.add('hidden'));
+  document.querySelectorAll('.shop-tabs .tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('content-' + tabId).classList.remove('hidden');
+  document.getElementById('tab-' + tabId).classList.add('active');
+}
+
+function switchVaultTab(tabId) {
+  playClickSound();
+  document.querySelectorAll('.vault-tab-content').forEach(c => c.classList.add('hidden'));
+  document.querySelectorAll('.vault-tabs .tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('vault-' + tabId).classList.remove('hidden');
+  document.getElementById('tab-v-' + tabId).classList.add('active');
+}
+
+function openMapMenu() { playClickSound(); document.getElementById("menu-map").classList.remove("hidden"); }
+function closeMapMenu() { playClickSound(); document.getElementById("menu-map").classList.add("hidden"); }
+
+// ============================================================
+// LORE (Title Screen ambient text)
+// ============================================================
+const ambientLorePhrases = [
+  "I need to find her...", "I'M NOT STRONG ENOUGH YET!", "Vengeance will be mine.",
+  "The blade reflects a monster...", "This nightmare just won't end."
+];
+
+function showLore() {
+  if (state !== "MENU" || isPaused) return;
+  const container = document.getElementById('lore-container');
+  const button = document.getElementById('center-sword-btn');
+  if (!button) return;
+  const bRect = button.getBoundingClientRect();
+  const text = document.createElement('div');
+  text.className = 'lore-text';
+  text.innerText = ambientLorePhrases[Math.floor(Math.random() * ambientLorePhrases.length)];
+  text.style.opacity = 0;
+  container.appendChild(text);
+  let validPosition = false, spawnX = 0, spawnY = 0, attempts = 0;
+  while (!validPosition && attempts < 50) {
+    spawnX = Math.random() * (window.innerWidth - 250);
+    spawnY = Math.random() * (window.innerHeight - 50);
+    attempts++;
+    if (spawnX + 250 < bRect.left - 60 || spawnX > bRect.right + 60 || spawnY + 40 < bRect.top - 60 || spawnY > bRect.bottom + 60) validPosition = true;
+  }
+  text.style.left = spawnX + "px"; text.style.top = spawnY + "px";
+  setTimeout(() => text.style.opacity = 1, 100);
+  setTimeout(() => { text.style.opacity = 0; setTimeout(() => text.remove(), 1600); }, 3500);
+}
+
+loreInterval = setInterval(showLore, 2000);
+
+// ============================================================
+// PROLOGUE & STORY MODE
+// ============================================================
+const detailedStorySentences = [
+  "They took everything from me...",
+  "The world was overrun by demons",
+  "I told my wife and daughter that we should head for the mountains and that we would be safe there",
+  "For 4 years we lived in peace. My sword had started collecting dust on the wall.",
+  "Then they found us and we we're ambushed in our sleep",
+  "If only I didn't stop training..."
+];
+
+function playStoryPrologue() {
+  playClickSound(); stopMusic();
+  clearAllActiveIntervals();
+  document.getElementById("mode-nav").style.display = "none";
+  document.getElementById("test-arena-btn").style.display = "none";
+  document.getElementById("menu-map").classList.add("hidden");
+  const screen = document.getElementById("prologue-screen");
+  const label = document.getElementById("prologue-text");
+  screen.classList.remove("hidden");
+
+  // Start rain ambience
+  playRainSound();
+
+  let textCursor = 0;
+  label.innerText = detailedStorySentences[textCursor];
+  label.style.opacity = 1;
+
+  function displayNextStoryLine() {
+    prologueTimeout = setTimeout(() => {
+      if (isPaused) { displayNextStoryLine(); return; }
+      label.style.opacity = 0;
+      prologueTimeout = setTimeout(() => {
+        textCursor++;
+        if (textCursor < detailedStorySentences.length) {
+          label.innerText = detailedStorySentences[textCursor];
+          label.style.opacity = 1;
+          displayNextStoryLine();
+        } else {
+          stopRainSound();
+          screen.classList.add("hidden");
+          changeState('ADVENTURE');
+        }
+      }, 1000);
+    }, 3500);
+  }
+  displayNextStoryLine();
+}
+
+function skipPrologue() {
+  playClickSound();
+  stopRainSound();
+  if (prologueTimeout) { clearTimeout(prologueTimeout); prologueTimeout = null; }
+  document.getElementById("prologue-screen").classList.add("hidden");
+  changeState('ADVENTURE');
+}
+
+// ============================================================
+// GAME START (Title -> Story Prologue -> Boss Fight)
+// ============================================================
+function startGame() {
+  playClickSound();
+  document.getElementById("main-menu-container").classList.add("hidden");
+  document.getElementById("hud").style.display = "block";
+  // Title screen button now runs the full story prologue sequence
+  playStoryPrologue();
+}
+
+function enterTestArena() { playClickSound(); changeState('TEST_ARENA'); }
+
+// ============================================================
+// STATE MANAGEMENT
+// ============================================================
+function clearAllActiveIntervals() {
+  if (spawnInterval) { clearInterval(spawnInterval); spawnInterval = null; }
+  if (bossInterval) { clearInterval(bossInterval); bossInterval = null; }
+  if (gameRAF) { cancelAnimationFrame(gameRAF); gameRAF = null; }
+  if (demonSpawnInterval) { clearInterval(demonSpawnInterval); demonSpawnInterval = null; }
+  objects.forEach(o => o.el.remove());
+  objects = [];
+  resetCombo();
+  clearBosses();
+}
+
+function changeState(newState) {
+  state = newState;
+  clearAllActiveIntervals();
+  document.getElementById("boss-hud").style.display = "none";
+  document.getElementById("player-hp-ui").style.display = "none";
+  document.getElementById("menu-shop").classList.add("hidden");
+  document.getElementById("menu-vault").classList.add("hidden");
+  document.getElementById("menu-map").classList.add("hidden");
+  document.getElementById("prologue-screen").classList.add("hidden");
+  document.getElementById("ambient-toggle-container").style.display = "none";
+  document.getElementById("boss-hints").style.display = "none";
+  comboUi.style.display = "none";
+  document.getElementById("test-arena-btn").style.display = "none";
+  toggleDojoVisuals(false);
+
+  if (state === "DOJO") {
+    document.getElementById("mode-nav").style.display = "flex";
+    document.getElementById("ambient-toggle-container").style.display = "block";
+    document.getElementById("test-arena-btn").style.display = "block";
+    toggleDojoVisuals(true);
+    buildDojoAudioDropdown();
+    let spawnRate = (currentBackground === 'sakura') ? 450 : 850;
+    spawnInterval = setInterval(spawnDojo, spawnRate);
+    let demonRate = (currentBackground === 'underworld') ? 4500 : 12000;
+    demonSpawnInterval = setInterval(spawnDojoDemon, demonRate);
+    runEngine(); playDojoMusic();
+  }
+  else if (state === "SHOP") {
+    document.getElementById("mode-nav").style.display = "flex";
+    document.getElementById("menu-shop").classList.remove("hidden");
+    renderShopElements();
+  }
+  else if (state === "VAULT") {
+    document.getElementById("mode-nav").style.display = "flex";
+    document.getElementById("menu-vault").classList.remove("hidden");
+    renderVaultElements();
+  }
+  else if (state === "ADVENTURE") {
+    document.getElementById("mode-nav").style.display = "none";
+    document.getElementById("boss-hud").style.display = "block";
+    document.getElementById("player-hp-ui").style.display = "block";
+    document.getElementById("boss-hints").style.display = "flex";
+    isBossSplit = false;
+    bossCurrentHp = bossMaxHp;
+    let hpBuff = (currentCosmetic === 'purple') ? 10 : 0;
+    currentHp = maxHp + hpBuff;
+    updateBars(); initBoss(); runEngine(); playAdventureMusic();
+  }
+  else if (state === "TEST_ARENA") {
+    document.getElementById("mode-nav").style.display = "flex";
+    document.getElementById("ominous-bg").style.background = "radial-gradient(circle, #0a001a 0%, #000000 80%)";
+    document.getElementById("bg-features-layer").innerHTML = "<div class='sim-grid'></div>";
+    spawnInterval = setInterval(() => {
+      if (isPaused) return;
+      let startX = Math.random() * (window.innerWidth - 50);
+      let vy = -(Math.random() * 10 + 15);
+      let vx = ((window.innerWidth / 2) - startX) * 0.01 + (Math.random() * 4 - 2);
+      createObj("target", "target", startX, window.innerHeight, vx, vy, 0.15, 250);
+    }, 250);
+    runEngine(); playAdventureMusic();
+  }
+}
+
+function toggleDojoVisuals(show) {
+  let bg = document.getElementById("ominous-bg");
+  let featureContainer = document.getElementById("bg-features-layer");
+  featureContainer.innerHTML = "";
+  if (show) {
+    let showProps = (currentBackground === 'default') ? "none" : "block";
+    document.getElementById("dojo-floor").style.display = showProps;
+    document.getElementById("dojo-left-banner").style.display = showProps;
+    document.getElementById("dojo-right-banner").style.display = showProps;
+    if (currentBackground === 'sakura') {
+      bg.style.background = "radial-gradient(circle, #2b1520 0%, #10050c 80%)";
+      for (let i = 0; i < 15; i++) {
+        let petal = document.createElement("div");
+        petal.className = "sakura-petal-node";
+        petal.style.left = Math.random() * 100 + "%";
+        petal.style.top = Math.random() * 80 + "%";
+        petal.style.animationDelay = (Math.random() * 5) + "s";
+        featureContainer.appendChild(petal);
+      }
+    } else if (currentBackground === 'underworld') {
+      bg.style.background = "radial-gradient(circle, #3a0000 0%, #0a0000 80%)";
+      let pit = document.createElement("div");
+      pit.className = "lava-wave";
+      featureContainer.appendChild(pit);
+    } else if (currentBackground === 'peaks') {
+      bg.style.background = "radial-gradient(circle, #102035 0%, #020810 80%)";
+      for (let i = 0; i < 8; i++) {
+        let spire = document.createElement("div");
+        spire.className = "ice-spike";
+        spire.style.left = (i * 15) + 5 + "%";
+        spire.style.bottom = "34%";
+        featureContainer.appendChild(spire);
+      }
+    } else if (currentBackground === 'shrine') {
+      bg.style.background = "radial-gradient(circle, #25103a 0%, #070210 80%)";
+      let gate = document.createElement("div");
+      gate.className = "shrine-gate";
+      featureContainer.appendChild(gate);
+    } else {
+      bg.style.background = "url('Dojo-main-background.png') center center no-repeat #050505";
+      bg.style.backgroundSize = "contain";
+    }
+  } else {
+    bg.style.background = "radial-gradient(circle, #1a0505 0%, #000 80%)";
+    document.getElementById("dojo-floor").style.display = "none";
+    document.getElementById("dojo-left-banner").style.display = "none";
+    document.getElementById("dojo-right-banner").style.display = "none";
+  }
+}
+
+function closeSubMenus() { playClickSound(); changeState('DOJO'); }
+function closeGameOver() { playClickSound(); document.getElementById("menu-gameover").classList.add("hidden"); changeState('DOJO'); }
+
+// ============================================================
+// GAME ENGINE (requestAnimationFrame for smoother performance)
+// ============================================================
+function runEngine() {
+  if (gameRAF) cancelAnimationFrame(gameRAF);
+  function tick() {
+    if (isPaused || isHitStopActive) { gameRAF = requestAnimationFrame(tick); return; }
+    let w = window.innerWidth;
+    let h = window.innerHeight;
+    for (let i = objects.length - 1; i >= 0; i--) {
+      let o = objects[i];
+      if (o.type === "dojo-demon") {
+        o.x += o.vx; o.y += o.vy;
+        if (o.x < 0 || o.x > w - 60) o.vx *= -1;
+        if (o.y < 0 || o.y > h - 150) o.vy *= -1;
+        o.el.style.left = o.x + "px"; o.el.style.top = o.y + "px";
+        continue;
+      }
+      o.vy += o.g; o.x += o.vx; o.y += o.vy;
+      o.el.style.left = o.x + "px"; o.el.style.top = o.y + "px";
+      if (o.type === "sliced-half") { o.rot += o.rotV; o.el.style.transform = `rotate(${o.rot}deg)`; }
+      if (o.y > h + 100 || o.x < -200 || o.x > w + 200) {
+        if (state === "ADVENTURE" && o.type === "fireball") { currentHp -= 10; updateBars(); checkDeath(); playHitSound("wood"); }
+        o.el.remove(); objects.splice(i, 1);
+      }
+    }
+    if (state === "ADVENTURE") {
+      bossEntities.forEach(b => {
+        b.el.style.left = b.x + "%";
+        if (Math.random() < 0.02) b.x = Math.random() * 60 + 10;
+      });
+    }
+    gameRAF = requestAnimationFrame(tick);
+  }
+  gameRAF = requestAnimationFrame(tick);
+}
+
+function triggerHitStop(durationMs) {
+  isHitStopActive = true;
+  setTimeout(() => { isHitStopActive = false; }, durationMs);
+}
+
+// ============================================================
+// SPAWNING
+// ============================================================
+function spawnDamageText(x, y, textVal, isCrit) {
+  let el = document.createElement("div");
+  el.className = "floating-text"; el.innerText = textVal;
+  el.style.left = x + "px"; el.style.top = y + "px";
+  if (isCrit) { el.style.color = "#ff33ff"; el.style.textShadow = "2px 2px 0px #000, 0 0 15px #ff00ff"; }
+  gc.appendChild(el);
+  requestAnimationFrame(() => { el.style.transform = "translateY(-80px) scale(1.3)"; el.style.opacity = "0"; });
+  setTimeout(() => el.remove(), 700);
+}
+
+function spawnDojo() {
+  if (isPaused) return;
+  let limit = window.innerWidth;
+  let startX = Math.random() * (limit - 150) + 50;
+  let vy = -(Math.random() * 4 + 13);
+  let vx = ((limit / 2) - startX) * 0.008 + (Math.random() * 2 - 1);
+  let roll = Math.random();
+  if (roll < 0.45) createObj("balloon", "balloon", startX, window.innerHeight, vx, vy, 0.23, 2);
+  else if (roll < 0.8) createObj("target", "target", startX, window.innerHeight, vx, vy, 0.23, 5);
+  else createObj("dummy", "dummy", startX, window.innerHeight, vx, vy, 0.23, 10);
+}
+
+function spawnDojoDemon() {
+  if (isPaused) return;
+  let el = document.createElement("div");
+  el.className = "object dojo-demon"; el.innerHTML = "👾";
+  gc.appendChild(el);
+  let x = Math.random() * (window.innerWidth - 100);
+  let y = Math.random() * (window.innerHeight - 300) + 50;
+  let vx = (Math.random() > 0.5 ? 3 : -3) * (Math.random() * 2 + 1);
+  let vy = (Math.random() > 0.5 ? 3 : -3) * (Math.random() * 2 + 1);
+  objects.push({el, type: "dojo-demon", x, y, vx, vy, g: 0, scoreVal: 60});
+  setTimeout(() => { let idx = objects.findIndex(o => o.el === el); if (idx !== -1) { el.remove(); objects.splice(idx, 1); } }, 7000);
+}
+
+// ============================================================
+// BOSS
+// ============================================================
+function initBoss() { clearBosses(); createBossEntity(45); triggerBossFireballLoop(); }
+
+function createBossEntity(leftPct) {
+  let el = document.createElement("div");
+  el.className = "boss";
+  el.innerHTML = "👹";
+  gc.appendChild(el);
+  el.style.top = "15%";
+  bossEntities.push({ el, x: leftPct });
+}
+
+function triggerBossFireballLoop() {
+  if (bossInterval) clearInterval(bossInterval);
+  let dynamicSpeed = isBossSplit ? 500 : 1300;
+  bossInterval = setInterval(() => {
+    if (isPaused) return;
+    bossEntities.forEach(b => {
+      let rect = b.el.getBoundingClientRect();
+      createObj("fireball", "fireball", rect.left + 25, rect.top + 40, (Math.random() - 0.5) * 5, 4, 0.06, 0);
+      playFireballSound();
+    });
+  }, dynamicSpeed);
+}
+
+function clearBosses() { bossEntities.forEach(b => b.el.remove()); bossEntities = []; }
+
+function createObj(type, cls, x, y, vx, vy, g, scoreVal) {
+  let el = document.createElement("div");
+  el.className = "object " + cls;
+  gc.appendChild(el);
+  objects.push({el, type, x, y, vx, vy, g, scoreVal});
+}
+
+// ============================================================
+// SLICING MECHANICS
+// ============================================================
+function createSlicedHalves(o, dx, dy, dist) {
+  let swipeAngle = Math.atan2(dy, dx);
+  let swipeAngleDeg = swipeAngle * (180 / Math.PI);
+  let swipeForce = Math.min(dist * 0.15, 12);
+  for (let half = 0; half < 2; half++) {
+    let halfEl = document.createElement("div");
+    halfEl.className = o.el.className; halfEl.innerHTML = o.el.innerHTML;
+    halfEl.style.pointerEvents = "none";
+    let color1 = half === 0 ? "black" : "transparent";
+    let color2 = half === 0 ? "transparent" : "black";
+    halfEl.style.webkitMaskImage = `linear-gradient(${swipeAngleDeg}deg, ${color1} 49.5%, ${color2} 50.5%)`;
+    halfEl.style.maskImage = `linear-gradient(${swipeAngleDeg}deg, ${color1} 49.5%, ${color2} 50.5%)`;
+    halfEl.style.left = o.x + "px"; halfEl.style.top = o.y + "px"; halfEl.style.boxShadow = "none";
+    gc.appendChild(halfEl);
+    let perpAngle = swipeAngle + (half === 0 ? Math.PI/2 : -Math.PI/2);
+    let splitForce = 4 + Math.random() * 3;
+    let nVx = o.vx * 0.5 + Math.cos(swipeAngle) * swipeForce * 0.7 + Math.cos(perpAngle) * splitForce;
+    let nVy = o.vy * 0.5 + Math.sin(swipeAngle) * swipeForce * 0.7 + Math.sin(perpAngle) * splitForce;
+    objects.push({ el: halfEl, type: "sliced-half", x: o.x, y: o.y, vx: nVx, vy: nVy, g: 0.6, rot: 0, rotV: (Math.random() - 0.5) * 15 });
+  }
+}
+
+function advanceCombo() {
+  if (state !== "DOJO" && state !== "TEST_ARENA") return 1.0;
+  currentCombo++;
+  let multiplier = 1.0;
+  if (currentCombo >= 25) multiplier = 3.5;
+  else if (currentCombo >= 15) multiplier = 2.5;
+  else if (currentCombo >= 8) multiplier = 1.8;
+  else if (currentCombo >= 3) multiplier = 1.3;
+  comboUi.style.display = "block";
+  comboCountEl.innerText = currentCombo;
+  comboMultEl.innerText = `Multiplier: ${multiplier.toFixed(1)}x`;
+  comboUi.style.transform = "translateX(-50%) scale(1.25)";
+  setTimeout(() => { comboUi.style.transform = "translateX(-50%) scale(1.0)"; }, 70);
+  playComboSound(currentCombo);
+  if (comboResetTimeout) clearTimeout(comboResetTimeout);
+  comboResetTimeout = setTimeout(resetCombo, COMBO_WINDOW);
+  return multiplier;
+}
+
+function resetCombo() {
+  currentCombo = 0;
+  comboUi.style.display = "none";
+  if (comboResetTimeout) { clearTimeout(comboResetTimeout); comboResetTimeout = null; }
+}
+
+function handleMove(x, y) {
+  if (isPaused || !isSwiping) return;
+  let containerRect = gc.getBoundingClientRect();
+  let localCurrentX = x - containerRect.left;
+  let localCurrentY = y - containerRect.top;
+  let dx = localCurrentX - lastX, dy = localCurrentY - lastY;
+  let dist = Math.hypot(dx, dy);
+  if (dist < 5) return;
+
+  slashEl.style.left = lastX + "px";
+  slashEl.style.top = lastY + "px";
+  slashEl.style.width = dist + "px";
+  slashEl.style.transform = `rotate(${Math.atan2(dy, dx)}rad)`;
+  slashEl.style.opacity = 1;
+  setTimeout(() => slashEl.style.opacity = 0, 50);
+
+  let objectHitThisFrame = false;
+  let maxHitMultiplier = 1.0;
+
+  for (let i = objects.length - 1; i >= 0; i--) {
+    let o = objects[i];
+    if (o.type === "sliced-half") continue;
+    let rect = o.el.getBoundingClientRect();
+    let radiusCheck = (o.type === "dummy" || o.type === "dojo-demon") ? 55 : 45;
+    if (Math.hypot(x - (rect.left + rect.width/2), y - (rect.top + rect.height/2)) < radiusCheck) {
+      let baseCoins = (o.type === "fireball") ? 1 : o.scoreVal;
+      let cosmeticBonus = (currentCosmetic === 'emerald') ? 2 : 0;
+      let environmentalMultiplier = (currentBackground === 'underworld' || currentBackground === 'peaks') ? 2 : 1;
+      let doubleMultiplier = (currentCosmetic === 'gold') ? 2 : 1;
+      let activeComboMult = 1.0;
+      if (state === "DOJO" || state === "TEST_ARENA") {
+        activeComboMult = advanceCombo();
+        if (activeComboMult > maxHitMultiplier) maxHitMultiplier = activeComboMult;
+      }
+      let coinGain = Math.floor(((((baseCoins * coinMultiplier) + cosmeticBonus) * environmentalMultiplier) * doubleMultiplier) * activeComboMult);
+      coins += coinGain;
+      objectHitThisFrame = true;
+      spawnDamageText(x, y, `+${coinGain}`, activeComboMult >= 2.5);
+      playHitSound(o.type);
+      createSlicedHalves(o, dx, dy, dist);
+      o.el.remove(); objects.splice(i, 1);
+      coinTxt.innerText = coins;
+    }
+  }
+
+  bossEntities.forEach(b => {
+    let rect = b.el.getBoundingClientRect();
+    if (Math.hypot(x - (rect.left+45), y - (rect.top+45)) < 75) {
+      let cosmeticDmg = (currentCosmetic === 'crimson') ? 1 : (currentCosmetic === 'lightning' ? 2 : 0);
+      let totalDmg = playerDmg + cosmeticDmg;
+      bossCurrentHp -= totalDmg;
+      objectHitThisFrame = true;
+      spawnDamageText(x, y, `-${totalDmg} HP`, true);
+      playBossHitSound(); updateBars();
+      if (bossCurrentHp <= (bossMaxHp / 2) && !isBossSplit) {
+        isBossSplit = true; createBossEntity(25); bossEntities[0].x = 65;
+        triggerBossFireballLoop(); playAdventureMusic();
+      }
+      if (bossCurrentHp <= 0) win();
+    }
+  });
+
+  if (objectHitThisFrame) {
+    playCleanSlicingSound();
+    triggerHitStop(40);
+    if (maxHitMultiplier >= 1.8 || state === "TEST_ARENA") {
+      gc.classList.add("shake-intense");
+      setTimeout(() => gc.classList.remove("shake-intense"), 150);
+    }
+  }
+  lastX = localCurrentX; lastY = localCurrentY;
+}
+
+// ============================================================
+// HEALTH / WIN / LOSE
+// ============================================================
+function updateBars() {
+  let hpBuff = (currentCosmetic === 'purple') ? 10 : 0;
+  let clampedPlayerHp = Math.max(0, currentHp);
+  let clampedBossHp = Math.max(0, bossCurrentHp);
+  document.getElementById("player-health-fill").style.width = (clampedPlayerHp / (maxHp + hpBuff)) * 100 + "%";
+  document.getElementById("player-health-text").innerText = clampedPlayerHp + " / " + (maxHp + hpBuff);
+  document.getElementById("boss-health-fill").style.width = (clampedBossHp / bossMaxHp) * 100 + "%";
+  document.getElementById("boss-health-text").innerText = clampedBossHp + " / " + bossMaxHp;
+}
+
+function checkDeath() {
+  if (currentHp <= 0) {
+    stopMusic(); clearBosses();
+    document.getElementById("menu-gameover").classList.remove("hidden");
+    state = "DEAD";
+  }
+}
+
+function win() {
+  stopMusic(); clearBosses();
+  document.getElementById("go-title").innerText = "VICTORY";
+  document.getElementById("go-title").style.color = "#33ff99";
+  document.getElementById("go-desc").innerText = "The Demon General falls broken before your blade! Your long training cycle yields completion.";
+  document.getElementById("menu-gameover").classList.remove("hidden");
+  state = "WIN";
+}
+
+// ============================================================
+// SHOP & VAULT
+// ============================================================
+function buyUpgrade(t) {
+  if (t === 'dmg' && coins >= costDmg) { coins -= costDmg; playerDmg++; costDmg = Math.floor(costDmg * 2.2); playHitSound("target"); }
+  if (t === 'hp' && coins >= costHp) { coins -= costHp; maxHp += 20; costHp = Math.floor(costHp * 2.2); playHitSound("target"); }
+  if (t === 'mult' && coins >= costMult) { coins -= costMult; coinMultiplier += 1; costMult = Math.floor(costMult * 2.5); playHitSound("target"); }
+  document.getElementById("shop-coins").innerText = coins;
+  coinTxt.innerText = coins;
+  document.getElementById("cost-dmg").innerText = costDmg;
+  document.getElementById("cost-hp").innerText = costHp;
+  document.getElementById("cost-mult").innerText = costMult;
+}
+
+function renderShopElements() {
+  document.getElementById("shop-coins").innerText = coins;
+  let cosBox = document.getElementById("content-cosmetics"); cosBox.innerHTML = "";
+  Object.keys(cosmeticCatalog).forEach(k => {
+    if (!unlockedCosmetics.includes(k)) {
+      let item = cosmeticCatalog[k];
+      cosBox.innerHTML += `<div class="shop-item"><div><strong style="color:${item.trail};">${item.name}</strong><br><small style="color:#aaa;">Cost: ${item.cost} | ${item.desc}</small></div><button class="nav-btn" style="padding:6px 12px;" onclick="processStorePurchase('cosmetic','${k}',${item.cost})">Unlock</button></div>`;
+    }
+  });
+  if (!cosBox.innerHTML) cosBox.innerHTML = "<p style='padding:15px; color:#aaa;'>All cosmetics unlocked.</p>";
+
+  let musBox = document.getElementById("content-music"); musBox.innerHTML = "";
+  Object.keys(trackCatalog).forEach(k => {
+    if (!unlockedTracks.includes(k)) {
+      let item = trackCatalog[k];
+      musBox.innerHTML += `<div class="shop-item"><div><strong>${item.name}</strong><br><small style="color:#aaa;">Cost: ${item.cost} | ${item.desc}</small></div><button class="nav-btn" style="padding:6px 12px;" onclick="processStorePurchase('music','${k}',${item.cost})">Unlock</button></div>`;
+    }
+  });
+  if (!musBox.innerHTML) musBox.innerHTML = "<p style='padding:15px; color:#aaa;'>All tracks unlocked.</p>";
+
+  let stageBox = document.getElementById("content-stages"); stageBox.innerHTML = "";
+  Object.keys(backgroundCatalog).forEach(k => {
+    if (!unlockedBackgrounds.includes(k)) {
+      let item = backgroundCatalog[k];
+      stageBox.innerHTML += `<div class="shop-item"><div><strong>${item.name}</strong><br><small style="color:#aaa;">Cost: ${item.cost} | ${item.desc}</small></div><button class="nav-btn" style="padding:6px 12px;" onclick="processStorePurchase('stage','${k}',${item.cost})">Unlock</button></div>`;
+    }
+  });
+  if (!stageBox.innerHTML) stageBox.innerHTML = "<p style='padding:15px; color:#aaa;'>All realms unlocked.</p>";
+}
+
+function processStorePurchase(category, key, cost) {
+  if (coins >= cost) {
+    coins -= cost; playHitSound("target");
+    if (category === 'cosmetic') unlockedCosmetics.push(key);
+    if (category === 'music') unlockedTracks.push(key);
+    if (category === 'stage') unlockedBackgrounds.push(key);
+    renderShopElements();
+    coinTxt.innerText = coins;
+  }
+}
+
+function renderVaultElements() {
+  let cosVault = document.getElementById("vault-cosmetics"); cosVault.innerHTML = "";
+  unlockedCosmetics.forEach(k => {
+    let item = cosmeticCatalog[k];
+    let isActive = currentCosmetic === k;
+    cosVault.innerHTML += `<div class="vault-item"><div><strong style="color:${item.trail};">${item.name}</strong><br><small style="color:#aaa;">${item.desc}</small></div><button class="nav-btn" style="padding:6px 12px;${isActive ? ' border-color:#33ff99; color:#33ff99;' : ''}" onclick="equipVaultAsset('cosmetic','${k}')">${isActive ? 'Equipped' : 'Equip'}</button></div>`;
+  });
+
+  let musVault = document.getElementById("vault-music"); musVault.innerHTML = "";
+  unlockedTracks.forEach(k => {
+    let item = trackCatalog[k];
+    let isActive = currentTrack === k;
+    musVault.innerHTML += `<div class="vault-item"><div><strong>${item.name}</strong><br><small style="color:#aaa;">${item.desc}</small></div><button class="nav-btn" style="padding:6px 12px;${isActive ? ' border-color:#33ff99; color:#33ff99;' : ''}" onclick="equipVaultAsset('music','${k}')">${isActive ? 'Active' : 'Select'}</button></div>`;
+  });
+
+  let stageVault = document.getElementById("vault-stages"); stageVault.innerHTML = "";
+  unlockedBackgrounds.forEach(k => {
+    let item = backgroundCatalog[k];
+    let isActive = currentBackground === k;
+    stageVault.innerHTML += `<div class="vault-item"><div><strong>${item.name}</strong><br><small style="color:#aaa;">${item.desc}</small></div><button class="nav-btn" style="padding:6px 12px;${isActive ? ' border-color:#33ff99; color:#33ff99;' : ''}" onclick="equipVaultAsset('stage','${k}')">${isActive ? 'Applied' : 'Apply'}</button></div>`;
+  });
+}
+
+function equipVaultAsset(category, key) {
+  playClickSound();
+  if (category === 'cosmetic') { currentCosmetic = key; document.documentElement.style.setProperty('--trail-color', cosmeticCatalog[key].trail); updateBars(); }
+  if (category === 'music') currentTrack = key;
+  if (category === 'stage') currentBackground = key;
+  renderVaultElements();
+}
+
+// ============================================================
+// INPUT HANDLING
+// ============================================================
+window.addEventListener("mousedown", e => {
+  if (isPaused) return;
+  if (state === "MENU" && !audioCtx) playChoir();
+  isSwiping = true;
+  let containerRect = gc.getBoundingClientRect();
+  lastX = e.clientX - containerRect.left;
+  lastY = e.clientY - containerRect.top;
+});
+window.addEventListener("mousemove", e => handleMove(e.clientX, e.clientY));
+window.addEventListener("mouseup", () => isSwiping = false);
+
+window.addEventListener("touchstart", e => {
+  if (isPaused) return;
+  if (state === "MENU" && !audioCtx) playChoir();
+  isSwiping = true;
+  let containerRect = gc.getBoundingClientRect();
+  lastX = e.touches[0].clientX - containerRect.left;
+  lastY = e.touches[0].clientY - containerRect.top;
+});
+window.addEventListener("touchmove", e => handleMove(e.touches[0].clientX, e.touches[0].clientY));
+window.addEventListener("touchend", () => isSwiping = false);
+window.addEventListener("click", () => { if (state === "MENU" && choirNodes.length === 0 && !isPaused) playChoir(); });
+
+// Prevent mobile zoom/scroll/bounce
+document.addEventListener("touchstart", e => { if (e.touches.length > 1) e.preventDefault(); }, { passive: false });
+document.addEventListener("touchmove", e => { e.preventDefault(); }, { passive: false });
+document.addEventListener("gesturestart", e => e.preventDefault());
+document.addEventListener("gesturechange", e => e.preventDefault());
+document.addEventListener("gestureend", e => e.preventDefault());
+let lastTouchEnd = 0;
+document.addEventListener('touchend', function(event) {
+  const now = Date.now();
+  if (now - lastTouchEnd <= 300) event.preventDefault();
+  lastTouchEnd = now;
+}, false);
+</script>
 </body>
 </html>
